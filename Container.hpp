@@ -11,9 +11,16 @@
 
 #include "Object.h"
 #include "Item.hpp"
+#include "./rapidXML/rapidxml.hpp"
+#include <iostream>
 
 class Container : public Object {
-  std::vector<Item> items;
+  std::vector<std::string> items;
+  
+public:
+  Container(rapidxml::xml_node<>* node);
+  Container();
+  void open_container();
 };
 
 #endif /* Container_hpp */

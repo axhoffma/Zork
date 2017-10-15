@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
 
 	//Map node is the first child of the XML overall tree
 	rapidxml::xml_node<>* mapNode = doc.first_node("map");
+  
+  //Room creation
 	rapidxml::xml_node<>* node = mapNode->first_node("room");
 
 	if(node == nullptr) {
@@ -47,6 +49,24 @@ int main(int argc, char* argv[]) {
 		//Get next room node
 		node = node->next_sibling("room");
 	}
+  
+  //End Room Creation
+  
+  //Container creation
+  
+  node = mapNode->first_node("container");
+  
+  std::unordered_map<std::string, Container> containerMap;
+  while(node) {
+    Container container(node);
+    containerMap.insert(std::make_pair(container.get_name(), container));
+    node = node->next_sibling("container");
+  }
+  
+  //End Container creation
+  
+  //Create the player's inventory
+  auto inventory = Container();
 
 
 	//END OF SETUP
@@ -67,6 +87,22 @@ int main(int argc, char* argv[]) {
     }
     if(input == "open exit") {
       exit_condition = currentRoom.exit_check();
+    }
+    
+    if(input == "i") {
+      inventory.open_container();
+    }
+    if(input.substr(0,4) == "open") {
+      std::string containerName = input.substr(5);
+      bool found = currentRoom.find_container(containerName);
+      if(found) {
+        auto containerSearch = containerMap.find(containerName);
+        auto container = containerSearch->second;
+        container.open_container();
+      }
+      else {
+        std::cout << "Error: that container is not in this room" << std::endl;
+      }
     }
 	}
 

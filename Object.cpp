@@ -23,6 +23,10 @@ std::string Object::get_description() {
   return this->description;
 }
 
+void Object::set_status(std::string status) {
+  this->status = status;
+}
+
 
 
 
