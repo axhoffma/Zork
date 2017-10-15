@@ -35,6 +35,12 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   roomProperty = roomNode->first_node("description");
   set_description(roomProperty->value());
   
+  //Get the status of the room
+  roomProperty = roomNode->first_node("type");
+  if(roomProperty != nullptr) {
+    type = roomProperty->value();
+  }
+  
   
 	roomProperty = roomNode->first_node("border");
   
@@ -71,6 +77,15 @@ Room Room::movement(std::string direction, const std::unordered_map<std::string,
   Room newRoom = search->second;
   std::cout << newRoom.get_description() << std::endl;
   return newRoom;  
+}
+
+bool Room::exit_check() {
+  bool exit = false;
+  if(type == "exit") {
+    std::cout << "Game Over" << std::endl;
+    exit = true;
+  }
+  return exit;
 }
 
 
