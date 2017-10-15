@@ -61,7 +61,12 @@ int main(int argc, char* argv[]) {
 		//Get user input
 		std::string input;
 		std::getline(std::cin, input);
-    currentRoom = currentRoom.movement(input, roomMap);
+    if(input == "n" || input == "s" || input == "e" || input == "w") {
+       currentRoom = currentRoom.movement(input, roomMap);
+    }
+    if(input == "open exit") {
+      exit_condition = currentRoom.exit_check();
+    }
 	}
 
 
