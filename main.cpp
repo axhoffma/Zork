@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     }
     
     //open (container)
-    else if(input.substr(0,4) == "open") {
+    else if(input.substr(0,4) == "open" && input.size() > 5) {
       std::string containerName = input.substr(5);
       bool found = currentRoom.find_container(containerName);
       if(found) {
@@ -131,36 +131,41 @@ int main(int argc, char* argv[]) {
     }
     
     //put (item) in (container)
-    else if(input.substr(0,3) == "put") {
+    else if(input.substr(0,3) == "put" && input.size() > 3) {
       std::istringstream iss{input};
       std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
-      bool found = inventory.find_item(tokens[1]);
-      if(found) {
-        bool containerFound = currentRoom.find_container(tokens[3]);
-        if(containerFound) {
-          auto containerSearch = containerMap.find(tokens[3]);
-          auto container = containerSearch->second;
-          container.add_item(tokens[1]);
+      if(tokens.size() == 4) {
+        bool found = inventory.find_item(tokens[1]);
+        if(found) {
+          bool containerFound = currentRoom.find_container(tokens[3]);
+          if(containerFound) {
+            auto containerSearch = containerMap.find(tokens[3]);
+            auto container = containerSearch->second;
+            container.add_item(tokens[1]);
+            
+            //update container stored in the map for future lookup
+            update_map<Container>(container, containerMap);
+            
+            inventory.remove_item(tokens[1]);
+            
+            std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
+          }
+          else {
+            std::cout << "Error: that container is not in this room" << std::endl;
+          }
           
-          //update container stored in the map for future lookup
-          update_map<Container>(container, containerMap);
-          
-          inventory.remove_item(tokens[1]);
-          
-          std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
         }
         else {
-          std::cout << "Error: that container is not in this room" << std::endl;
+          std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
         }
-        
       }
       else {
-        std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
+        std::cout << "Invalid command" << std::endl;
       }
     }
     
     //take (item)
-    else if(input.substr(0,4) == "take") {
+    else if(input.substr(0,4) == "take" && input.size() > 4) {
       std::string itemName = input.substr(5);
       bool found = currentRoom.find_item(itemName, containerMap);
       if(found) {
@@ -172,6 +177,21 @@ int main(int argc, char* argv[]) {
       }
       else {
         std::cout << "Error: that item is not in the current room" << std::endl;
+      }
+    }
+    
+    //drop (item)
+    else if(input.substr(0,4) == "drop" && input.size() > 5) {
+      std::string itemName = input.substr(5);
+      bool found = inventory.find_item(itemName);
+      if(found) {
+        inventory.remove_item(itemName);
+        currentRoom.add_item(itemName);
+        update_map<Room>(currentRoom, roomMap);
+        std::cout << itemName << " dropped" << std::endl;
+      }
+      else {
+        std::cout << "Error: you do not have " << itemName << " in your inventory" << std::endl;
       }
     }
     
