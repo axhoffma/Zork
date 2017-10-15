@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
 
 
 	//create an unordered map to store all of our Room objects
-	std::unordered_map<std::string, Room::Room> roomMap;
+	std::unordered_map<std::string, Room> roomMap;
 
 	//Map node is the first child of the XML overall tree
 	rapidxml::xml_node<>* mapNode = doc.first_node("map");
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 	//keep creating rooms while we have new ones
 	while(node) {
 		//create Room
-		Room::Room room(node);
+		Room room(node);
 		//Add room to unordered map
 		roomMap.insert(std::make_pair(room.get_name(), room));
 		//Get next room node
