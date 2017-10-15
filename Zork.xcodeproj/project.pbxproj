@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		37AA692F1F92D0A600F9028C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA692E1F92D0A600F9028C /* main.cpp */; };
+		37AA69521F93050E00F9028C /* Room.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA694F1F93050E00F9028C /* Room.cpp */; };
+		37AA69531F93050E00F9028C /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA69501F93050E00F9028C /* Object.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,11 @@
 /* Begin PBXFileReference section */
 		37AA692B1F92D0A600F9028C /* Zork */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Zork; sourceTree = BUILT_PRODUCTS_DIR; };
 		37AA692E1F92D0A600F9028C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		37AA694D1F93050D00F9028C /* rapidXML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = rapidXML; sourceTree = SOURCE_ROOT; };
+		37AA694E1F93050D00F9028C /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = SOURCE_ROOT; };
+		37AA694F1F93050E00F9028C /* Room.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Room.cpp; sourceTree = SOURCE_ROOT; };
+		37AA69501F93050E00F9028C /* Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = SOURCE_ROOT; };
+		37AA69511F93050E00F9028C /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +64,11 @@
 		37AA692D1F92D0A600F9028C /* Zork */ = {
 			isa = PBXGroup;
 			children = (
+				37AA69501F93050E00F9028C /* Object.cpp */,
+				37AA694E1F93050D00F9028C /* Object.h */,
+				37AA694D1F93050D00F9028C /* rapidXML */,
+				37AA694F1F93050E00F9028C /* Room.cpp */,
+				37AA69511F93050E00F9028C /* Room.h */,
 				37AA692E1F92D0A600F9028C /* main.cpp */,
 			);
 			path = Zork;
@@ -119,7 +131,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37AA69521F93050E00F9028C /* Room.cpp in Sources */,
 				37AA692F1F92D0A600F9028C /* main.cpp in Sources */,
+				37AA69531F93050E00F9028C /* Object.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
