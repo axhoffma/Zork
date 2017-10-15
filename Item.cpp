@@ -7,3 +7,10 @@
 //
 
 #include "Item.hpp"
+
+
+Item::Item(rapidxml::xml_node<>* itemNode) {
+  rapidxml::xml_node<>* itemProperty = itemNode->first_node("name");
+  set_name(itemProperty->value());
+  
+}

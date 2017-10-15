@@ -63,6 +63,13 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
     containers.push_back(roomProperty->value());
     roomProperty = roomProperty->next_sibling("container");
   }
+  
+  //Add the list of items that are in the room
+  roomProperty = roomNode->first_node("item");
+  while(roomProperty) {
+    items.push_back(roomProperty->value());
+    roomProperty = roomProperty->next_sibling();
+  }
 }
 
 Room Room::movement(std::string direction, const std::unordered_map<std::string, Room>& roomMap) {
@@ -101,6 +108,48 @@ bool Room::find_container(std::string container) {
     found = true;
   }
   return found;
+}
+
+bool Room::find_item(std::string item, const std::unordered_map<std::string, Container>& containerMap) {
+  bool found = false;
+  
+  //Check if the item is directly in the room
+  if(std::find(std::begin(items), std::end(items), item) != std::end(items)) {
+    found = true;
+    return found;
+  }
+  //Check if the item is in a container in the room
+  for(auto container : containers) {
+    auto search = containerMap.find(container);
+    auto containerObject = search->second;
+    found = containerObject.find_item(item);
+    if(found == true) {
+      return found;
+    }
+  }
+  return found;
+}
+
+void Room::remove_item(std::string item, std::unordered_map<std::string, Container>& containerMap) {
+  auto index = std::find(std::begin(items), std::end(items), item);
+  if(index != std::end(items)) {
+    items.erase(index);
+  }
+  else {
+    for(auto container : containers) {
+      auto search = containerMap.find(container);
+      auto containerObject = search->second;
+      bool found = containerObject.find_item(item);
+      if(found == true) {
+        containerObject.remove_item(item);
+        
+        //Update the container that is stored in the map
+        containerMap.erase(containerObject.get_name());
+        containerMap.insert(std::make_pair(containerObject.get_name(), containerObject));
+        return;
+      }
+    }
+  }
 }
 
 

@@ -12,6 +12,9 @@
 #include "Object.h"
 
 class Item : public Object {
+  
+public:
+  Item(rapidxml::xml_node<>*);
 };
 
 #endif /* Item_hpp */
