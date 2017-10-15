@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3735528E1F93BB8E003C40B3 /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3735528C1F93BB8E003C40B3 /* Container.cpp */; };
+		373552911F93BBEE003C40B3 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3735528F1F93BBEE003C40B3 /* Item.cpp */; };
 		37AA69521F93050E00F9028C /* Room.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA694F1F93050E00F9028C /* Room.cpp */; };
 		37AA69531F93050E00F9028C /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA69501F93050E00F9028C /* Object.cpp */; };
 		37FE67261F93B822002A9AFD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37FE67251F93B822002A9AFD /* main.cpp */; };
@@ -25,6 +27,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3735528C1F93BB8E003C40B3 /* Container.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Container.cpp; sourceTree = "<group>"; };
+		3735528D1F93BB8E003C40B3 /* Container.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Container.hpp; sourceTree = "<group>"; };
+		3735528F1F93BBEE003C40B3 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
+		373552901F93BBEE003C40B3 /* Item.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Item.hpp; sourceTree = "<group>"; };
 		37AA692B1F92D0A600F9028C /* Zork */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Zork; sourceTree = BUILT_PRODUCTS_DIR; };
 		37AA694D1F93050D00F9028C /* rapidXML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = rapidXML; sourceTree = SOURCE_ROOT; };
 		37AA694E1F93050D00F9028C /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = SOURCE_ROOT; };
@@ -48,6 +54,10 @@
 		37AA69221F92D0A600F9028C = {
 			isa = PBXGroup;
 			children = (
+				3735528F1F93BBEE003C40B3 /* Item.cpp */,
+				373552901F93BBEE003C40B3 /* Item.hpp */,
+				3735528C1F93BB8E003C40B3 /* Container.cpp */,
+				3735528D1F93BB8E003C40B3 /* Container.hpp */,
 				37FE67251F93B822002A9AFD /* main.cpp */,
 				37AA69501F93050E00F9028C /* Object.cpp */,
 				37AA694E1F93050D00F9028C /* Object.h */,
@@ -124,8 +134,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				37AA69521F93050E00F9028C /* Room.cpp in Sources */,
+				3735528E1F93BB8E003C40B3 /* Container.cpp in Sources */,
 				37AA69531F93050E00F9028C /* Object.cpp in Sources */,
 				37FE67261F93B822002A9AFD /* main.cpp in Sources */,
+				373552911F93BBEE003C40B3 /* Item.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

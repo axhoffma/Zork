@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <algorithm>
 
 class Object {
 private:
@@ -28,6 +29,7 @@ public:
 	void set_name(std::string);
 
 	std::string get_status();
+  void set_status(std::string status);
 	std::string get_description();
 	void set_description(std::string);
 

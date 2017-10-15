@@ -35,7 +35,7 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   roomProperty = roomNode->first_node("description");
   set_description(roomProperty->value());
   
-  //Get the status of the room
+  //Get the type of the room
   roomProperty = roomNode->first_node("type");
   if(roomProperty != nullptr) {
     type = roomProperty->value();
@@ -56,6 +56,13 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
     //advance to the next border node
 		roomProperty = roomProperty->next_sibling("border");
 	}
+  
+  //Add the list of containers that are in the room
+  roomProperty = roomNode->first_node("container");
+  while(roomProperty) {
+    containers.push_back(roomProperty->value());
+    roomProperty = roomProperty->next_sibling("container");
+  }
 }
 
 Room Room::movement(std::string direction, const std::unordered_map<std::string, Room>& roomMap) {
@@ -86,6 +93,14 @@ bool Room::exit_check() {
     exit = true;
   }
   return exit;
+}
+
+bool Room::find_container(std::string container) {
+  bool found = false;
+  if(std::find(containers.begin(), containers.end(), container) != containers.end()) {
+    found = true;
+  }
+  return found;
 }
 
 

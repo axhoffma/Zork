@@ -17,11 +17,13 @@
 class Room : public Object {
 	std::string type = "regular";
 	std::array<std::string, 4> border;
+  std::vector<std::string> containers;
 
 public:
 	Room(rapidxml::xml_node<>* node);
 	bool exit_check();
   Room movement(std::string direction, const std::unordered_map<std::string, Room>& roomMap);
+  bool find_container(std::string container);
 
 };
 
