@@ -31,6 +31,7 @@
 		3735528D1F93BB8E003C40B3 /* Container.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Container.hpp; sourceTree = "<group>"; };
 		3735528F1F93BBEE003C40B3 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
 		373552901F93BBEE003C40B3 /* Item.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Item.hpp; sourceTree = "<group>"; };
+		373552931F93F695003C40B3 /* helper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = helper.hpp; sourceTree = "<group>"; };
 		37AA692B1F92D0A600F9028C /* Zork */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Zork; sourceTree = BUILT_PRODUCTS_DIR; };
 		37AA694D1F93050D00F9028C /* rapidXML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = rapidXML; sourceTree = SOURCE_ROOT; };
 		37AA694E1F93050D00F9028C /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = SOURCE_ROOT; };
@@ -54,6 +55,7 @@
 		37AA69221F92D0A600F9028C = {
 			isa = PBXGroup;
 			children = (
+				373552931F93F695003C40B3 /* helper.hpp */,
 				3735528F1F93BBEE003C40B3 /* Item.cpp */,
 				373552901F93BBEE003C40B3 /* Item.hpp */,
 				3735528C1F93BB8E003C40B3 /* Container.cpp */,

@@ -14,6 +14,7 @@
 #include "Container.hpp"
 #include <sstream>
 #include <iterator>
+#include "helper.hpp"
 
 
 int main(int argc, char* argv[]) {
@@ -142,8 +143,7 @@ int main(int argc, char* argv[]) {
           container.add_item(tokens[1]);
           
           //update container stored in the map for future lookup
-          containerMap.erase(tokens[3]);
-          containerMap.insert(std::make_pair(container.get_name(), container));
+          update_map<Container>(container, containerMap);
           
           inventory.remove_item(tokens[1]);
           
@@ -166,6 +166,8 @@ int main(int argc, char* argv[]) {
       if(found) {
         inventory.add_item(itemName);
         currentRoom.remove_item(itemName, containerMap);
+        
+        update_map<Room>(currentRoom, roomMap);
         std::cout << "Item " << itemName << " added to inventory" << std::endl;
       }
       else {
