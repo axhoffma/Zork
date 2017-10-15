@@ -11,6 +11,7 @@
 #include "./rapidXML/rapidxml.hpp"
 #include "Object.h"
 #include "Room.h"
+#include "Container.hpp"
 
 
 int main(int argc, char* argv[]) {
