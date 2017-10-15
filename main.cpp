@@ -195,6 +195,20 @@ int main(int argc, char* argv[]) {
       }
     }
     
+    //read (item)
+    else if(input.substr(0,4) == "read" && input.size() > 5) {
+      std::string itemName = input.substr(5);
+      bool found = inventory.find_item(itemName);
+      if(found) {
+        auto search = itemMap.find(itemName);
+        auto item = search->second;
+        item.read_writing();
+      }
+      else {
+        std::cout << "Error: you do not have " << itemName << " in your inventory" << std::endl;
+      }
+    }
+    
     else {
       std::cout << "Invalid Command" << std::endl;
     }
