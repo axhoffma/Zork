@@ -56,8 +56,8 @@ int main(int argc, char* argv[]) {
 	auto search = roomMap.find("Entrance");
 	auto currentRoom = search->second;
   std::cout << currentRoom.get_description() << std::endl;
-
-	while(1) {
+  bool exit_condition = false;
+	while(exit_condition == false) {
 		//Get user input
 		std::string input;
 		std::getline(std::cin, input);

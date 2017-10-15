@@ -20,7 +20,7 @@ class Room : public Object {
 
 public:
 	Room(rapidxml::xml_node<>* node);
-	void exit_check();
+	bool exit_check();
   Room movement(std::string direction, const std::unordered_map<std::string, Room>& roomMap);
 
 };
