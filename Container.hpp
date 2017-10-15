@@ -13,13 +13,23 @@
 #include "Item.hpp"
 #include "./rapidXML/rapidxml.hpp"
 #include <iostream>
+#include <algorithm>
 
 class Container : public Object {
   std::vector<std::string> items;
   
 public:
-  Container(rapidxml::xml_node<>* node);
+  Container(rapidxml::xml_node<>*);
   Container();
+  
+  bool find_item(std::string);
+  inline void add_item(std::string item) {
+    items.push_back(item);
+  }
+  inline void remove_item(std::string item) {
+    auto index = std::find(std::begin(items), std::end(items), item);
+    items.erase(index);
+  }
   void open_container();
 };
 

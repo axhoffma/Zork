@@ -12,6 +12,8 @@
 #include "Object.h"
 #include "Room.h"
 #include "Container.hpp"
+#include <sstream>
+#include <iterator>
 
 
 int main(int argc, char* argv[]) {
@@ -77,21 +79,30 @@ int main(int argc, char* argv[]) {
 	auto search = roomMap.find("Entrance");
 	auto currentRoom = search->second;
   std::cout << currentRoom.get_description() << std::endl;
+  
+  //Start game
   bool exit_condition = false;
 	while(exit_condition == false) {
 		//Get user input
 		std::string input;
 		std::getline(std::cin, input);
+    
+    //n, s, e, w
     if(input == "n" || input == "s" || input == "e" || input == "w") {
        currentRoom = currentRoom.movement(input, roomMap);
     }
+    
+    //open exit
     if(input == "open exit") {
       exit_condition = currentRoom.exit_check();
     }
     
+    //i
     if(input == "i") {
       inventory.open_container();
     }
+    
+    //open (container)
     if(input.substr(0,4) == "open") {
       std::string containerName = input.substr(5);
       bool found = currentRoom.find_container(containerName);
@@ -104,6 +115,31 @@ int main(int argc, char* argv[]) {
         std::cout << "Error: that container is not in this room" << std::endl;
       }
     }
+    
+    //put (item) in (container)
+    if(input.substr(0,3) == "put") {
+      std::istringstream iss{input};
+      std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+      bool found = inventory.find_item(tokens[1]);
+      if(found) {
+        bool containerFound = currentRoom.find_container(tokens[3]);
+        if(containerFound) {
+          auto containerSearch = containerMap.find(tokens[3]);
+          auto container = containerSearch->second;
+          container.add_item(tokens[1]);
+          
+          inventory.remove_item(tokens[1]);
+        }
+        else {
+          std::cout << "Error: that container is not in this room" << std::endl;
+        }
+        
+      }
+      else {
+        std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
+      }
+    }
+    
 	}
 
 

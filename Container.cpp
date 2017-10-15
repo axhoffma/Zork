@@ -40,6 +40,10 @@ Container::Container() {
 
 void Container::open_container() {
   std::cout << get_name();
+  if(get_name() == "Inventory" && items.size() == 0) {
+    std::cout << ": empty" << std::endl;
+    return;
+  }
   if(items.size() != 0) {
     std::cout << " contains " + items[0];
     for(auto index = 1; index != items.size(); ++index) {
@@ -51,3 +55,15 @@ void Container::open_container() {
   }
   std::cout << std::endl;
 }
+
+bool Container::find_item(std::string desiredItem) {
+  bool found = false;
+  for(auto item : items) {
+    if(desiredItem == item) {
+      found = true;
+      return found;
+    }
+  }
+  return found;
+}
+
