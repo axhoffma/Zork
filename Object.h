@@ -12,6 +12,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include "./rapidXML/rapidxml.hpp"
 
 class Object {
 private:

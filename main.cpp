@@ -12,6 +12,8 @@
 #include "Object.h"
 #include "Room.h"
 #include "Container.hpp"
+#include <sstream>
+#include <iterator>
 
 
 int main(int argc, char* argv[]) {
@@ -65,6 +67,19 @@ int main(int argc, char* argv[]) {
   
   //End Container creation
   
+  //Item creation
+  
+  node = mapNode->first_node("item");
+  
+  std::unordered_map<std::string, Item> itemMap;
+  while(node) {
+    Item item(node);
+    itemMap.insert(std::make_pair(item.get_name(), item));
+    node = node->next_sibling("item");
+  }
+  
+  //End item Creation
+  
   //Create the player's inventory
   auto inventory = Container();
 
@@ -77,22 +92,31 @@ int main(int argc, char* argv[]) {
 	auto search = roomMap.find("Entrance");
 	auto currentRoom = search->second;
   std::cout << currentRoom.get_description() << std::endl;
+  
+  //Start game
   bool exit_condition = false;
 	while(exit_condition == false) {
 		//Get user input
 		std::string input;
 		std::getline(std::cin, input);
+    
+    //n, s, e, w
     if(input == "n" || input == "s" || input == "e" || input == "w") {
        currentRoom = currentRoom.movement(input, roomMap);
     }
-    if(input == "open exit") {
+    
+    //open exit
+    else if(input == "open exit") {
       exit_condition = currentRoom.exit_check();
     }
     
-    if(input == "i") {
+    //i
+    else if(input == "i") {
       inventory.open_container();
     }
-    if(input.substr(0,4) == "open") {
+    
+    //open (container)
+    else if(input.substr(0,4) == "open") {
       std::string containerName = input.substr(5);
       bool found = currentRoom.find_container(containerName);
       if(found) {
@@ -104,6 +128,55 @@ int main(int argc, char* argv[]) {
         std::cout << "Error: that container is not in this room" << std::endl;
       }
     }
+    
+    //put (item) in (container)
+    else if(input.substr(0,3) == "put") {
+      std::istringstream iss{input};
+      std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+      bool found = inventory.find_item(tokens[1]);
+      if(found) {
+        bool containerFound = currentRoom.find_container(tokens[3]);
+        if(containerFound) {
+          auto containerSearch = containerMap.find(tokens[3]);
+          auto container = containerSearch->second;
+          container.add_item(tokens[1]);
+          
+          //update container stored in the map for future lookup
+          containerMap.erase(tokens[3]);
+          containerMap.insert(std::make_pair(container.get_name(), container));
+          
+          inventory.remove_item(tokens[1]);
+          
+          std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
+        }
+        else {
+          std::cout << "Error: that container is not in this room" << std::endl;
+        }
+        
+      }
+      else {
+        std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
+      }
+    }
+    
+    //take (item)
+    else if(input.substr(0,4) == "take") {
+      std::string itemName = input.substr(5);
+      bool found = currentRoom.find_item(itemName, containerMap);
+      if(found) {
+        inventory.add_item(itemName);
+        currentRoom.remove_item(itemName, containerMap);
+        std::cout << "Item " << itemName << " added to inventory" << std::endl;
+      }
+      else {
+        std::cout << "Error: that item is not in the current room" << std::endl;
+      }
+    }
+    
+    else {
+      std::cout << "Invalid Command" << std::endl;
+    }
+    
 	}
 
 
