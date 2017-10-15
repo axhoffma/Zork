@@ -13,4 +13,13 @@ Item::Item(rapidxml::xml_node<>* itemNode) {
   rapidxml::xml_node<>* itemProperty = itemNode->first_node("name");
   set_name(itemProperty->value());
   
+  itemProperty = itemNode->first_node("writing");
+  if(itemProperty != nullptr) {
+    writing = itemProperty->value();
+  }
+  
+}
+
+void Item::read_writing() {
+  std::cout << writing << std::endl;
 }

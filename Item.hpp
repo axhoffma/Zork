@@ -12,9 +12,10 @@
 #include "Object.h"
 
 class Item : public Object {
-  
+  std::string writing;
 public:
   Item(rapidxml::xml_node<>*);
+  void read_writing();
 };
 
 #endif /* Item_hpp */
