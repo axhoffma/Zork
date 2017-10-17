@@ -215,6 +215,9 @@ int main(int argc, char* argv[]) {
           parse_commands(action, objectMap);
         }
       }
+      else {
+        std::cout << "Error: " << tokens[2] << " is not in your inventory" << std::endl;
+      }
     }
     
     else {

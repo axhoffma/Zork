@@ -149,9 +149,13 @@ bool Room::find_item(std::string item) {
 
 void Room::remove_item(std::string item, std::unordered_map<std::string, Object*>& containerMap) {
   auto index = std::find(std::begin(items), std::end(items), item);
+  
+  //Check to see if the item is directly in the room
   if(index != std::end(items)) {
     items.erase(index);
   }
+  
+  //See if the item is in a container in the room
   else {
     for(auto container : containers) {
       auto search = containerMap.find(container);
@@ -159,10 +163,6 @@ void Room::remove_item(std::string item, std::unordered_map<std::string, Object*
       bool found = containerObject->find_item(item);
       if(found == true) {
         containerObject->remove_item(item);
-        
-        //Update the container that is stored in the map
-        containerMap.erase(containerObject->get_name());
-        containerMap.insert(std::make_pair(containerObject->get_name(), containerObject));
         return;
       }
     }
