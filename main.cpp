@@ -29,8 +29,8 @@ int main(int argc, char* argv[]) {
 	doc.parse<0>(ifile.data());
 
 
-	//create an unordered map to store all of our Room objects
-	std::unordered_map<std::string, Room> roomMap;
+	//create an unordered map to store all of our  objects
+	std::unordered_map<std::string, Object*> objectMap;
 
 	//Map node is the first child of the XML overall tree
 	rapidxml::xml_node<>* mapNode = doc.first_node("map");
@@ -46,9 +46,9 @@ int main(int argc, char* argv[]) {
 	//keep creating rooms while we have new ones
 	while(node) {
 		//create Room
-		Room room(node);
+		Room* room = new Room(node);
 		//Add room to unordered map
-		roomMap.insert(std::make_pair(room.get_name(), room));
+		objectMap.insert(std::make_pair(room->get_name(), room));
 		//Get next room node
 		node = node->next_sibling("room");
 	}
@@ -59,10 +59,9 @@ int main(int argc, char* argv[]) {
   
   node = mapNode->first_node("container");
   
-  std::unordered_map<std::string, Container> containerMap;
   while(node) {
-    Container container(node);
-    containerMap.insert(std::make_pair(container.get_name(), container));
+    Container* container = new Container(node);
+    objectMap.insert(std::make_pair(container->get_name(), container));
     node = node->next_sibling("container");
   }
   
@@ -72,10 +71,9 @@ int main(int argc, char* argv[]) {
   
   node = mapNode->first_node("item");
   
-  std::unordered_map<std::string, Item> itemMap;
   while(node) {
-    Item item(node);
-    itemMap.insert(std::make_pair(item.get_name(), item));
+    Item* item = new Item(node);
+    objectMap.insert(std::make_pair(item->get_name(), item));
     node = node->next_sibling("item");
   }
   
@@ -90,9 +88,9 @@ int main(int argc, char* argv[]) {
 	//START OF GAMEPLAY
 
 	//Find the Entrance to start the game
-	auto search = roomMap.find("Entrance");
-	auto currentRoom = search->second;
-  std::cout << currentRoom.get_description() << std::endl;
+	auto search = objectMap.find("Entrance");
+	auto currentRoom = dynamic_cast<Room*>(search->second);
+  std::cout << currentRoom->get_description() << std::endl;
   
   //Start game
   bool exit_condition = false;
@@ -103,12 +101,12 @@ int main(int argc, char* argv[]) {
     
     //n, s, e, w
     if(input == "n" || input == "s" || input == "e" || input == "w") {
-       currentRoom = currentRoom.movement(input, roomMap);
+       currentRoom = currentRoom->movement(input, objectMap);
     }
     
     //open exit
     else if(input == "open exit") {
-      exit_condition = currentRoom.exit_check();
+      exit_condition = currentRoom->exit_check();
     }
     
     //i
@@ -119,11 +117,11 @@ int main(int argc, char* argv[]) {
     //open (container)
     else if(input.substr(0,4) == "open" && input.size() > 5) {
       std::string containerName = input.substr(5);
-      bool found = currentRoom.find_container(containerName);
+      bool found = currentRoom->find_container(containerName);
       if(found) {
-        auto containerSearch = containerMap.find(containerName);
-        auto container = containerSearch->second;
-        container.open_container();
+        auto containerSearch = objectMap.find(containerName);
+        auto container = dynamic_cast<Container*>(containerSearch->second);
+        container->open_container();
       }
       else {
         std::cout << "Error: that container is not in this room" << std::endl;
@@ -137,14 +135,12 @@ int main(int argc, char* argv[]) {
       if(tokens.size() == 4) {
         bool found = inventory.find_item(tokens[1]);
         if(found) {
-          bool containerFound = currentRoom.find_container(tokens[3]);
+          bool containerFound = currentRoom->find_container(tokens[3]);
           if(containerFound) {
-            auto containerSearch = containerMap.find(tokens[3]);
-            auto container = containerSearch->second;
-            container.add_item(tokens[1]);
+            auto containerSearch = objectMap.find(tokens[3]);
+            auto container = dynamic_cast<Container*>(containerSearch->second);
+            container->add_item(tokens[1]);
             
-            //update container stored in the map for future lookup
-            update_map<Container>(container, containerMap);
             
             inventory.remove_item(tokens[1]);
             
@@ -167,12 +163,11 @@ int main(int argc, char* argv[]) {
     //take (item)
     else if(input.substr(0,4) == "take" && input.size() > 4) {
       std::string itemName = input.substr(5);
-      bool found = currentRoom.find_item(itemName, containerMap);
+      bool found = currentRoom->find_item(itemName, objectMap);
       if(found) {
         inventory.add_item(itemName);
-        currentRoom.remove_item(itemName, containerMap);
+        currentRoom->remove_item(itemName, objectMap);
         
-        update_map<Room>(currentRoom, roomMap);
         std::cout << "Item " << itemName << " added to inventory" << std::endl;
       }
       else {
@@ -186,8 +181,7 @@ int main(int argc, char* argv[]) {
       bool found = inventory.find_item(itemName);
       if(found) {
         inventory.remove_item(itemName);
-        currentRoom.add_item(itemName);
-        update_map<Room>(currentRoom, roomMap);
+        currentRoom->add_item(itemName);
         std::cout << itemName << " dropped" << std::endl;
       }
       else {
@@ -200,12 +194,24 @@ int main(int argc, char* argv[]) {
       std::string itemName = input.substr(5);
       bool found = inventory.find_item(itemName);
       if(found) {
-        auto search = itemMap.find(itemName);
-        auto item = search->second;
-        item.read_writing();
+        auto search = objectMap.find(itemName);
+        auto item = dynamic_cast<Item*>(search->second);
+        item->read_writing();
       }
       else {
         std::cout << "Error: you do not have " << itemName << " in your inventory" << std::endl;
+      }
+    }
+    
+    //turn on (item)
+    else if(input.substr(0,6) == "turn on" && input.size() > 7) {
+      std::string itemName = input.substr(7);
+      bool found = inventory.find_item(itemName);
+      if(found) {
+        Item* item = dynamic_cast<Item*>(objectMap[itemName]);
+        //Get the vector of actions to perform
+        auto actions = item->turn_on();
+        //TODO implement behind the scenes actions
       }
     }
     

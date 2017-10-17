@@ -23,6 +23,8 @@ class Item : public Object {
 public:
   Item(rapidxml::xml_node<>*);
   void read_writing();
+  
+  std::vector<std::string> turn_on();
 };
 
 

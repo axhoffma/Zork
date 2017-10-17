@@ -41,3 +41,10 @@ Item::Item(rapidxml::xml_node<>* itemNode) {
 void Item::read_writing() {
   std::cout << writing << std::endl;
 }
+
+std::vector<std::string> Item::turn_on() {
+  for(auto print : activationCommands.prints) {
+    std::cout << print << std::endl;
+  }
+  return activationCommands.actions;
+}
