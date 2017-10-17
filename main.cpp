@@ -99,23 +99,27 @@ int main(int argc, char* argv[]) {
 		std::string input;
 		std::getline(std::cin, input);
     
+    //parse input into separate tokens
+    std::istringstream iss{input};
+    std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+    
     //n, s, e, w
-    if(input == "n" || input == "s" || input == "e" || input == "w") {
+    if(tokens[0] == "n" || tokens[0] == "s" || tokens[0] == "e" || tokens[0] == "w") {
        currentRoom = currentRoom->movement(input, objectMap);
     }
     
     //open exit
-    else if(input == "open exit") {
+    else if(tokens[0] == "open exit") {
       exit_condition = currentRoom->exit_check();
     }
     
     //i
-    else if(input == "i") {
+    else if(tokens[0] == "i") {
       inventory.open_container();
     }
     
     //open (container)
-    else if(input.substr(0,4) == "open" && input.size() > 5) {
+    else if(tokens[0] == "open" && tokens.size() == 2) {
       std::string containerName = input.substr(5);
       bool found = currentRoom->find_container(containerName);
       if(found) {
@@ -129,39 +133,32 @@ int main(int argc, char* argv[]) {
     }
     
     //put (item) in (container)
-    else if(input.substr(0,3) == "put" && input.size() > 3) {
+    else if(tokens[0] == "put" && tokens.size() == 4) {
       std::istringstream iss{input};
       std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
-      if(tokens.size() == 4) {
-        bool found = inventory.find_item(tokens[1]);
-        if(found) {
-          bool containerFound = currentRoom->find_container(tokens[3]);
-          if(containerFound) {
-            auto containerSearch = objectMap.find(tokens[3]);
-            auto container = dynamic_cast<Container*>(containerSearch->second);
-            container->add_item(tokens[1]);
+      bool found = inventory.find_item(tokens[1]);
+      if(found) {
+        bool containerFound = currentRoom->find_container(tokens[3]);
+        if(containerFound) {
+          auto containerSearch = objectMap.find(tokens[3]);
+          auto container = dynamic_cast<Container*>(containerSearch->second);
+          container->add_item(tokens[1]);
+          inventory.remove_item(tokens[1]);
             
-            
-            inventory.remove_item(tokens[1]);
-            
-            std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
-          }
-          else {
-            std::cout << "Error: that container is not in this room" << std::endl;
-          }
-          
+          std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
         }
         else {
-          std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
+          std::cout << "Error: that container is not in this room" << std::endl;
         }
+          
       }
       else {
-        std::cout << "Invalid command" << std::endl;
+        std::cout << "Error: you dont have " << tokens[1] << " in your inventory" << std::endl;
       }
     }
     
     //take (item)
-    else if(input.substr(0,4) == "take" && input.size() > 4) {
+    else if(tokens[0] == "take" && tokens.size() == 2) {
       std::string itemName = input.substr(5);
       bool found = currentRoom->find_item(itemName, objectMap);
       if(found) {
@@ -176,7 +173,7 @@ int main(int argc, char* argv[]) {
     }
     
     //drop (item)
-    else if(input.substr(0,4) == "drop" && input.size() > 5) {
+    else if(tokens[0]== "drop" && tokens.size() == 2) {
       std::string itemName = input.substr(5);
       bool found = inventory.find_item(itemName);
       if(found) {
@@ -190,7 +187,7 @@ int main(int argc, char* argv[]) {
     }
     
     //read (item)
-    else if(input.substr(0,4) == "read" && input.size() > 5) {
+    else if(tokens[0] == "read" && tokens.size() == 2) {
       std::string itemName = input.substr(5);
       bool found = inventory.find_item(itemName);
       if(found) {
@@ -204,7 +201,7 @@ int main(int argc, char* argv[]) {
     }
     
     //turn on (item)
-    else if(input.substr(0,4) == "turn" && input.size() > 7) {
+    else if(tokens[0] == "turn" && tokens[1] == "on" && tokens.size() == 3) {
       std::istringstream iss{input};
       std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
       std::string itemName = tokens[2];
