@@ -204,14 +204,19 @@ int main(int argc, char* argv[]) {
     }
     
     //turn on (item)
-    else if(input.substr(0,6) == "turn on" && input.size() > 7) {
-      std::string itemName = input.substr(7);
+    else if(input.substr(0,4) == "turn" && input.size() > 7) {
+      std::istringstream iss{input};
+      std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+      std::string itemName = tokens[2];
       bool found = inventory.find_item(itemName);
       if(found) {
         Item* item = dynamic_cast<Item*>(objectMap[itemName]);
         //Get the vector of actions to perform
         auto actions = item->turn_on();
         //TODO implement behind the scenes actions
+        for(auto action : actions) {
+          parse_commands(action, objectMap);
+        }
       }
     }
     

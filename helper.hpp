@@ -16,23 +16,23 @@
 
 
 //Add objects to a room or container
-void add(Object* object, Room& room) {
+void add(Object* object, Room* room) {
   
   //Check if the object is a container
   if(dynamic_cast<Container*>(object) != NULL) {
-    room.add_container(object->get_name());
+    room->add_container(object->get_name());
   }
   
   //Check if the object is an Item
   else if(dynamic_cast<Item*>(object) != NULL) {
-    room.add_item(object->get_name());
+    room->add_item(object->get_name());
   }
   //TODO add support for creatures
 }
 
 //Add an item to a container
-void add(Item& item, Container& container) {
-  container.add_item(item.get_name());
+void add(Item* item, Container* container) {
+  container->add_item(item->get_name());
 }
 
 
@@ -40,7 +40,7 @@ void add(Item& item, Container& container) {
 
 
 //Find an object on the map
-Object* find_object(std::string objectName, std::unordered_map<std::string, Object*> objectMap) {
+Object* find_object(std::string objectName, std::unordered_map<std::string, Object*>& objectMap) {
   auto search = objectMap.find(objectName);
   if(search != objectMap.end()) {
     return search->second;
@@ -75,11 +75,74 @@ void delete_object(std::string objectToDelete, Object* objectToSearch) {
     }
   }
   
+  //If the object is an Item or a Creature, do nothing
+  
 }
 
 //Update the status of an object to a new string
 void update(Object* object, std::string newStatus) {
   object->set_status(newStatus);
+}
+
+void parse_commands(std::string command, std::unordered_map<std::string, Object*>& objectMap) {
+  //Separate the input words for easy analysis
+  std::istringstream iss{command};
+  std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+  
+  //Option 1: Update (object) to (status)
+  if(tokens[0] == "Update") {
+    auto search = objectMap.find(tokens[1]);
+    if(search != objectMap.end()) {
+      Object* object = search->second;
+      update(object, tokens[3]);
+    }
+  }
+  
+  //Option 2: Add (object) to (room/container)
+  if(tokens[0] == "Add") {
+    auto search = objectMap.find(tokens[1]);
+    if(search != objectMap.end()) {
+      Object* object = search->second;
+      search = objectMap.find(tokens[3]);
+      if(search != objectMap.end()) {
+        Object* addTo = search->second;
+        if(dynamic_cast<Room*>(addTo) != NULL) {
+          Room* room = dynamic_cast<Room*>(addTo);
+          add(object, room);
+        }
+        if(dynamic_cast<Container*>(addTo) != NULL) {
+          Container* container = dynamic_cast<Container*>(addTo);
+          add(dynamic_cast<Item*>(object), container);
+        }
+      }
+    }
+  }
+  
+  //Option 3: Delete (object)
+  if(tokens[0] == "Delete") {
+    auto search = objectMap.find(tokens[1]);
+    if(search != objectMap.end()) {
+      Object* object = search->second;
+      
+      //If it is a room, just remove the room from the map
+      if(dynamic_cast<Room*>(object) != NULL) {
+        objectMap.erase(object->get_name());
+      }
+      
+      //Search every Object and remove references
+      for(auto mapElement : objectMap) {
+        Object* mapObject = mapElement.second;
+        delete_object(tokens[1], mapObject);
+      }
+      
+    }
+  }
+  
+  //Option 4: Game Over
+  if(tokens[0] == "Game" && tokens[1] == "Over") {
+    
+  }
+  
 }
 
 #endif /* helper_hpp */
