@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
     
     //open (container)
     else if(tokens[0] == "open" && tokens.size() == 2) {
-      std::string containerName = input.substr(5);
+      std::string containerName = tokens[1];
       bool found = currentRoom->find_container(containerName);
       if(found) {
         auto containerSearch = objectMap.find(containerName);
@@ -134,8 +134,6 @@ int main(int argc, char* argv[]) {
     
     //put (item) in (container)
     else if(tokens[0] == "put" && tokens.size() == 4) {
-      std::istringstream iss{input};
-      std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
       bool found = inventory.find_item(tokens[1]);
       if(found) {
         bool containerFound = currentRoom->find_container(tokens[3]);
@@ -159,7 +157,7 @@ int main(int argc, char* argv[]) {
     
     //take (item)
     else if(tokens[0] == "take" && tokens.size() == 2) {
-      std::string itemName = input.substr(5);
+      std::string itemName = tokens[1];
       bool found = currentRoom->find_item(itemName, objectMap);
       if(found) {
         inventory.add_item(itemName);
@@ -174,7 +172,7 @@ int main(int argc, char* argv[]) {
     
     //drop (item)
     else if(tokens[0]== "drop" && tokens.size() == 2) {
-      std::string itemName = input.substr(5);
+      std::string itemName = tokens[1];
       bool found = inventory.find_item(itemName);
       if(found) {
         inventory.remove_item(itemName);
@@ -188,7 +186,7 @@ int main(int argc, char* argv[]) {
     
     //read (item)
     else if(tokens[0] == "read" && tokens.size() == 2) {
-      std::string itemName = input.substr(5);
+      std::string itemName = tokens[1];
       bool found = inventory.find_item(itemName);
       if(found) {
         auto search = objectMap.find(itemName);
@@ -202,8 +200,6 @@ int main(int argc, char* argv[]) {
     
     //turn on (item)
     else if(tokens[0] == "turn" && tokens[1] == "on" && tokens.size() == 3) {
-      std::istringstream iss{input};
-      std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
       std::string itemName = tokens[2];
       bool found = inventory.find_item(itemName);
       if(found) {
