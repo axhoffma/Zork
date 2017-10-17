@@ -35,6 +35,12 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   roomProperty = roomNode->first_node("description");
   set_description(roomProperty->value());
   
+  //Get the status of the room
+  roomProperty = roomNode->first_node("status");
+  if(roomProperty != nullptr) {
+    set_status(roomProperty->value());
+  }
+  
   //Get the type of the room
   roomProperty = roomNode->first_node("type");
   if(roomProperty != nullptr) {

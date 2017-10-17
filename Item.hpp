@@ -11,11 +11,19 @@
 
 #include "Object.h"
 
+
+struct turnOn {
+  std::vector<std::string> prints;
+  std::vector<std::string> actions;
+};
+
 class Item : public Object {
   std::string writing;
+  turnOn activationCommands;
 public:
   Item(rapidxml::xml_node<>*);
   void read_writing();
 };
+
 
 #endif /* Item_hpp */

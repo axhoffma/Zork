@@ -17,6 +17,7 @@
 
 class Container : public Object {
   std::vector<std::string> items;
+  std::vector<std::string> accepts;
   
 public:
   Container(rapidxml::xml_node<>*);

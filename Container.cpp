@@ -25,6 +25,15 @@ Container::Container(rapidxml::xml_node<>* containerNode) {
     set_status(containerProperty->value());
   }
   
+  //Get the list of accepts
+  containerProperty = containerNode->first_node("accept");
+  while(containerProperty) {
+    accepts.push_back(containerProperty->value());
+    containerProperty = containerProperty->next_sibling("accept");
+  }
+  
+  
+  //Add list of items to the container
   containerProperty = containerNode->first_node("item");
   while(containerProperty) {
     //insert the name of the item to the Items vector
