@@ -74,7 +74,14 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   roomProperty = roomNode->first_node("item");
   while(roomProperty) {
     items.push_back(roomProperty->value());
-    roomProperty = roomProperty->next_sibling();
+    roomProperty = roomProperty->next_sibling("item");
+  }
+  
+  //Add the list of creatures that are in the room
+  roomProperty = roomNode->first_node("creature");
+  while(roomProperty) {
+    creatures.push_back(roomProperty->value());
+    roomProperty = roomProperty->next_sibling("creature");
   }
 }
 
@@ -181,6 +188,41 @@ void Room::remove_container(std::string container) {
   if(index != std::end(containers)) {
     containers.erase(index);
   }
+}
+
+void Room::remove_creature(std::string creature) {
+  auto index = std::find(std::begin(creatures), std::end(creatures), creature);
+  if(index != std::end(creatures)) {
+    creatures.erase(index);
+  }
+}
+
+bool Room::find_creature(std::string creature) {
+  if(std::find(std::begin(creatures), std::end(creatures), creature) != std::end(creatures)) {
+    return true;
+  }
+  return false;
+}
+
+bool Room::find_object(std::string object) {
+  bool found = false;
+  
+  //Check if the item is directly in the room
+  if(std::find(std::begin(items), std::end(items), object) != std::end(items)) {
+    found = true;
+    return found;
+  }
+  //Check if the item is directly in the room
+  if(std::find(std::begin(creatures), std::end(creatures), object) != std::end(items)) {
+    found = true;
+    return found;
+  }
+  //Check if the item is directly in the room
+  if(std::find(std::begin(containers), std::end(containers), object) != std::end(items)) {
+    found = true;
+    return found;
+  }
+  return found;
 }
 
 

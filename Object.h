@@ -13,7 +13,9 @@
 #include <array>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include "./rapidXML/rapidxml.hpp"
+
 
 class Object {
 private:
@@ -24,8 +26,6 @@ private:
 public:
 	virtual ~Object();
 
-	//virtual void remove();
-	//void update(std::string);
 
 	std::string get_name();
 	void set_name(std::string);
@@ -34,6 +34,7 @@ public:
   void set_status(std::string status);
 	std::string get_description();
 	void set_description(std::string);
+  virtual bool find_object(std::string object) = 0;
 
 };
 

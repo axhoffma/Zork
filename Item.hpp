@@ -25,6 +25,9 @@ public:
   void read_writing();
   
   std::vector<std::string> turn_on();
+  inline bool find_object(std::string object) {
+    return false;
+  };
 };
 
 

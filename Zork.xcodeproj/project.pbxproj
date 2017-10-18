@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		371C2FCD1F96E5B80011B4AB /* Creature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 371C2FCB1F96E5B80011B4AB /* Creature.cpp */; };
+		371C2FCF1F9700D70011B4AB /* helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 371C2FCE1F9700D70011B4AB /* helper.cpp */; };
 		3735528E1F93BB8E003C40B3 /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3735528C1F93BB8E003C40B3 /* Container.cpp */; };
 		373552911F93BBEE003C40B3 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3735528F1F93BBEE003C40B3 /* Item.cpp */; };
 		37AA69521F93050E00F9028C /* Room.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37AA694F1F93050E00F9028C /* Room.cpp */; };
@@ -27,6 +29,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		371C2FCB1F96E5B80011B4AB /* Creature.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Creature.cpp; sourceTree = "<group>"; };
+		371C2FCC1F96E5B80011B4AB /* Creature.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Creature.hpp; sourceTree = "<group>"; };
+		371C2FCE1F9700D70011B4AB /* helper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = helper.cpp; sourceTree = "<group>"; };
 		3735528C1F93BB8E003C40B3 /* Container.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Container.cpp; sourceTree = "<group>"; };
 		3735528D1F93BB8E003C40B3 /* Container.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Container.hpp; sourceTree = "<group>"; };
 		3735528F1F93BBEE003C40B3 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
@@ -55,6 +60,9 @@
 		37AA69221F92D0A600F9028C = {
 			isa = PBXGroup;
 			children = (
+				371C2FCE1F9700D70011B4AB /* helper.cpp */,
+				371C2FCB1F96E5B80011B4AB /* Creature.cpp */,
+				371C2FCC1F96E5B80011B4AB /* Creature.hpp */,
 				373552931F93F695003C40B3 /* helper.hpp */,
 				3735528F1F93BBEE003C40B3 /* Item.cpp */,
 				373552901F93BBEE003C40B3 /* Item.hpp */,
@@ -137,8 +145,10 @@
 			files = (
 				37AA69521F93050E00F9028C /* Room.cpp in Sources */,
 				3735528E1F93BB8E003C40B3 /* Container.cpp in Sources */,
+				371C2FCF1F9700D70011B4AB /* helper.cpp in Sources */,
 				37AA69531F93050E00F9028C /* Object.cpp in Sources */,
 				37FE67261F93B822002A9AFD /* main.cpp in Sources */,
+				371C2FCD1F96E5B80011B4AB /* Creature.cpp in Sources */,
 				373552911F93BBEE003C40B3 /* Item.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
