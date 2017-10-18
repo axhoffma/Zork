@@ -27,6 +27,10 @@ void Object::set_status(std::string status) {
   this->status = status;
 }
 
+std::string Object::get_status() {
+  return this->status;
+}
+
 
 
 

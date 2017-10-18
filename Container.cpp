@@ -76,3 +76,34 @@ bool Container::find_item(std::string desiredItem) {
   return found;
 }
 
+//Check if an item can be placed in the container
+bool Container::check_accept(std::string item) {
+  
+  //If there are no accepts, all items are allowed
+  if(accepts.size() == 0) {
+    return true;
+  }
+  for(auto accepted_item : accepts) {
+    if(accepted_item == item) {
+      return true;
+    }
+  }
+  return false;
+}
+
+//Check if the container can be opened
+bool Container::check_open() {
+  if(accepts.size() == 0) {
+    return true;
+  }
+  for(auto item : items) {
+    //Condition to check is if an accept is in the inventory
+    for(auto accepted_item : accepts) {
+      if(accepted_item == item) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+

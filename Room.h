@@ -20,6 +20,7 @@ class Room : public Object {
 	std::array<std::string, 4> border;
   std::vector<std::string> containers;
   std::vector<std::string> items;
+  std::vector<std::string> creatures;
 
 public:
 	Room(rapidxml::xml_node<>* node);
@@ -37,7 +38,14 @@ public:
   inline void add_item(std::string item) {
     items.push_back(item);
   }
-
+  
+  bool find_creature(std::string);
+  inline void add_creature(std::string creature) {
+    creatures.push_back(creature);
+  }
+  void remove_creature(std::string);
+  
+  bool find_object(std::string);
 };
 
 

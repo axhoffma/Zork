@@ -32,6 +32,11 @@ public:
     items.erase(index);
   }
   void open_container();
+  bool check_accept(std::string item);
+  bool check_open();
+  inline bool find_object(std::string object) {
+    return find_item(object);
+  };
 };
 
 #endif /* Container_hpp */

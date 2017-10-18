@@ -12,6 +12,7 @@
 #include "Object.h"
 #include "Room.h"
 #include "Container.hpp"
+#include "Creature.hpp"
 #include <sstream>
 #include <iterator>
 #include "helper.hpp"
@@ -79,6 +80,18 @@ int main(int argc, char* argv[]) {
   
   //End item Creation
   
+  //Creature Creation
+  
+  node = mapNode->first_node("creature");
+  
+  while(node) {
+    Creature* creature = new Creature(node);
+    objectMap.insert(std::make_pair(creature->get_name(), creature));
+    node = node->next_sibling("creature");
+  }
+  
+  //End creature creation
+  
   //Create the player's inventory
   auto inventory = Container();
 
@@ -109,7 +122,7 @@ int main(int argc, char* argv[]) {
     }
     
     //open exit
-    else if(tokens[0] == "open exit") {
+    else if(input == "open exit") {
       exit_condition = currentRoom->exit_check();
     }
     
@@ -125,7 +138,13 @@ int main(int argc, char* argv[]) {
       if(found) {
         auto containerSearch = objectMap.find(containerName);
         auto container = dynamic_cast<Container*>(containerSearch->second);
-        container->open_container();
+        auto openable = container->check_open();
+        if(openable) {
+          container->open_container();
+        }
+        else {
+          std::cout << "You can't open it" << std::endl;
+        }
       }
       else {
         std::cout << "Error: that container is not in this room" << std::endl;
@@ -140,10 +159,16 @@ int main(int argc, char* argv[]) {
         if(containerFound) {
           auto containerSearch = objectMap.find(tokens[3]);
           auto container = dynamic_cast<Container*>(containerSearch->second);
-          container->add_item(tokens[1]);
-          inventory.remove_item(tokens[1]);
-            
-          std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
+          bool allowedInsert = container->check_accept(tokens[1]);
+          if(allowedInsert) {
+            container->add_item(tokens[1]);
+            inventory.remove_item(tokens[1]);
+            std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
+          }
+          else {
+            std::cout << "You cannot put that item there" << std::endl;
+          }
+  
         }
         else {
           std::cout << "Error: that container is not in this room" << std::endl;
@@ -206,13 +231,40 @@ int main(int argc, char* argv[]) {
         Item* item = dynamic_cast<Item*>(objectMap[itemName]);
         //Get the vector of actions to perform
         auto actions = item->turn_on();
-        //TODO implement behind the scenes actions
         for(auto action : actions) {
           parse_commands(action, objectMap);
         }
       }
       else {
         std::cout << "Error: " << tokens[2] << " is not in your inventory" << std::endl;
+      }
+    }
+    
+    //attack (creature) with (item)
+    else if(tokens[0] == "attack" && tokens[2] == "with" && tokens.size() == 4) {
+      std::string itemName = tokens[3];
+      std::string creatureName = tokens[1];
+      bool found = currentRoom->find_creature(creatureName);
+      if(found) {
+        found = inventory.find_item(itemName);
+        if(found) {
+          Creature* creature = dynamic_cast<Creature*>(objectMap[creatureName]);
+          bool effective = creature->check_attack(itemName);
+          if(effective) {
+            //Check the attack conditions
+            std::cout << "You attack " << creatureName << " with " << itemName << "!" << std::endl;
+            creature->execute_attack(objectMap);
+          }
+          else {
+            std::cout << "The item has no effect!" << std::endl;
+          }
+        }
+        else {
+          std::cout << "That item is not in your inventory" << std::endl;
+        }
+      }
+      else {
+        std::cout << "That creature is not in this room" << std::endl;
       }
     }
     
