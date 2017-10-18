@@ -24,10 +24,16 @@ class Room : public Object {
 public:
 	Room(rapidxml::xml_node<>* node);
 	bool exit_check();
-  Room movement(std::string direction, const std::unordered_map<std::string, Room>&);
+  Room* movement(std::string direction, const std::unordered_map<std::string, Object*>&);
   bool find_container(std::string);
-  bool find_item(std::string, const std::unordered_map<std::string, Container>&);
-  void remove_item(std::string, std::unordered_map<std::string, Container>&);
+  inline void add_container(std::string container) {
+    containers.push_back(container);
+  }
+  void remove_container(std::string container);
+  bool find_item(std::string, const std::unordered_map<std::string, Object*>&);
+  bool find_item(std::string);
+  void remove_item(std::string, std::unordered_map<std::string, Object*>&);
+  void remove_item(std::string);
   inline void add_item(std::string item) {
     items.push_back(item);
   }

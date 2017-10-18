@@ -35,6 +35,12 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   roomProperty = roomNode->first_node("description");
   set_description(roomProperty->value());
   
+  //Get the status of the room
+  roomProperty = roomNode->first_node("status");
+  if(roomProperty != nullptr) {
+    set_status(roomProperty->value());
+  }
+  
   //Get the type of the room
   roomProperty = roomNode->first_node("type");
   if(roomProperty != nullptr) {
@@ -72,12 +78,12 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
   }
 }
 
-Room Room::movement(std::string direction, const std::unordered_map<std::string, Room>& roomMap) {
+Room* Room::movement(std::string direction, const std::unordered_map<std::string, Object*>& roomMap) {
   int index = direction_to_array(direction);
   std::string roomName = border[index];
   if(roomName == "") {
     std::cout << "Can't go that way" <<std::endl;
-    return *this;
+    return this;
   }
   
   auto search = roomMap.find(roomName);
@@ -85,11 +91,11 @@ Room Room::movement(std::string direction, const std::unordered_map<std::string,
   //Must take into account if the room was removed
   if(search == roomMap.end()) {
     std::cout << "Can't go that way" <<std::endl;
-    return *this;
+    return this;
   }
   
-  Room newRoom = search->second;
-  std::cout << newRoom.get_description() << std::endl;
+  Room* newRoom = dynamic_cast<Room*>(search->second);
+  std::cout << newRoom->get_description() << std::endl;
   return newRoom;  
 }
 
@@ -110,7 +116,8 @@ bool Room::find_container(std::string container) {
   return found;
 }
 
-bool Room::find_item(std::string item, const std::unordered_map<std::string, Container>& containerMap) {
+//For searching both the immediate items, as well as items in containers
+bool Room::find_item(std::string item, const std::unordered_map<std::string, Object*>& containerMap) {
   bool found = false;
   
   //Check if the item is directly in the room
@@ -121,8 +128,8 @@ bool Room::find_item(std::string item, const std::unordered_map<std::string, Con
   //Check if the item is in a container in the room
   for(auto container : containers) {
     auto search = containerMap.find(container);
-    auto containerObject = search->second;
-    found = containerObject.find_item(item);
+    auto containerObject = dynamic_cast<Container*>(search->second);
+    found = containerObject->find_item(item);
     if(found == true) {
       return found;
     }
@@ -130,25 +137,49 @@ bool Room::find_item(std::string item, const std::unordered_map<std::string, Con
   return found;
 }
 
-void Room::remove_item(std::string item, std::unordered_map<std::string, Container>& containerMap) {
+//For searching only the item vector in the room
+bool Room::find_item(std::string item) {
+  bool found = false;
+  
+  if(std::find(std::begin(items), std::end(items), item) != std::end(items)) {
+    found = true;
+  }
+  return found;
+}
+
+void Room::remove_item(std::string item, std::unordered_map<std::string, Object*>& containerMap) {
+  auto index = std::find(std::begin(items), std::end(items), item);
+  
+  //Check to see if the item is directly in the room
+  if(index != std::end(items)) {
+    items.erase(index);
+  }
+  
+  //See if the item is in a container in the room
+  else {
+    for(auto container : containers) {
+      auto search = containerMap.find(container);
+      auto containerObject = dynamic_cast<Container*>(search->second);
+      bool found = containerObject->find_item(item);
+      if(found == true) {
+        containerObject->remove_item(item);
+        return;
+      }
+    }
+  }
+}
+
+void Room::remove_item(std::string item) {
   auto index = std::find(std::begin(items), std::end(items), item);
   if(index != std::end(items)) {
     items.erase(index);
   }
-  else {
-    for(auto container : containers) {
-      auto search = containerMap.find(container);
-      auto containerObject = search->second;
-      bool found = containerObject.find_item(item);
-      if(found == true) {
-        containerObject.remove_item(item);
-        
-        //Update the container that is stored in the map
-        containerMap.erase(containerObject.get_name());
-        containerMap.insert(std::make_pair(containerObject.get_name(), containerObject));
-        return;
-      }
-    }
+}
+
+void Room::remove_container(std::string container) {
+  auto index = std::find(std::begin(containers), std::end(containers), container);
+  if(index != std::end(containers)) {
+    containers.erase(index);
   }
 }
 
