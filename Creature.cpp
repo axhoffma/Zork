@@ -41,20 +41,22 @@ Creature::Creature(rapidxml::xml_node<>* creatureNode) {
   
   //Get the conditions
   rapidxml::xml_node<>* attackNode = creatureNode->first_node("attack");
-  creatureProperty = attackNode->first_node("print");
-  while(creatureProperty) {
-    prints.push_back(creatureProperty->value());
-    creatureProperty = creatureProperty->next_sibling("print");
-  }
-  creatureProperty = attackNode->first_node("action");
-  while(creatureProperty) {
-    actions.push_back(creatureProperty->value());
-    creatureProperty = creatureProperty->next_sibling("action");
-  }
-  creatureProperty = attackNode->first_node("condition");
-  while(creatureProperty) {
-    conditions.push_back(Condition(creatureProperty));
-    creatureProperty = creatureProperty->next_sibling("condition");
+  if(attackNode) {
+    creatureProperty = attackNode->first_node("print");
+    while(creatureProperty) {
+      prints.push_back(creatureProperty->value());
+      creatureProperty = creatureProperty->next_sibling("print");
+    }
+    creatureProperty = attackNode->first_node("action");
+    while(creatureProperty) {
+      actions.push_back(creatureProperty->value());
+      creatureProperty = creatureProperty->next_sibling("action");
+    }
+    creatureProperty = attackNode->first_node("condition");
+    while(creatureProperty) {
+      conditions.push_back(Condition(creatureProperty));
+      creatureProperty = creatureProperty->next_sibling("condition");
+    }
   }
   
 }
@@ -70,6 +72,9 @@ bool Creature::check_attack(std::string item) {
 
 bool Creature::execute_attack(std::unordered_map<std::string, Object*> objectMap) {
   int valid_attack = false;
+  if(conditions.size() == 0) {
+    valid_attack = true;
+  }
   for(auto condition: conditions) {
     valid_attack = condition.check_condition(objectMap);
   }

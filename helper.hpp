@@ -35,6 +35,8 @@ void delete_object(std::string, Object*);
 //Update the status of an object to a new string
 void update(Object*, std::string);
 
+void parse_user_commands(std::string, std::unordered_map<std::string, Object*>&, bool = true);
+
 void parse_commands(std::string, std::unordered_map<std::string, Object*>&);
 
 #endif /* helper_hpp */
