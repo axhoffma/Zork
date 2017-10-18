@@ -12,22 +12,13 @@
 #include "Object.h"
 #include "helper.hpp"
 #include <unordered_map>
-
-
-struct Condition {
-  std::string conditionHas;
-  std::string conditionOwner;
-  std::string conditionObject;
-  std::string conditionStatus;
-  Condition(rapidxml::xml_node<>*);
-  bool check_has();
-};
-
+class Condition;
 class Creature : public Object {
   std::vector<std::string> vulnerabilities;
   std::vector<std::string> actions;
   std::vector<std::string> prints;
   std::vector<Condition> conditions;
+  std::vector<Trigger> triggers;
   
 public:
   Creature(rapidxml::xml_node<>*);
@@ -35,7 +26,8 @@ public:
   bool execute_attack(std::unordered_map<std::string, Object*>);
   inline bool find_object(std::string object) {
     return false;
-  }
+  };
+  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
 };
 
 #endif /* Creature_hpp */

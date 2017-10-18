@@ -7,6 +7,10 @@
 //
 
 #include "helper.hpp"
+#include "Room.h"
+#include "Container.hpp"
+#include "Item.hpp"
+
 //Add objects to a room or container
 void add(Object* object, Room* room) {
   
@@ -66,6 +70,10 @@ void delete_object(std::string objectToDelete, Object* objectToSearch) {
     found = room->find_item(objectToDelete);
     if(found) {
       room->remove_item(objectToDelete);
+    }
+    found = room->find_creature(objectToDelete);
+    if(found) {
+      room->remove_creature(objectToDelete);
     }
   }
   

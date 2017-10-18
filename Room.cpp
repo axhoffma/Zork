@@ -83,6 +83,12 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
     creatures.push_back(roomProperty->value());
     roomProperty = roomProperty->next_sibling("creature");
   }
+  //Add the list of triggers that are in the room
+  roomProperty = roomNode->first_node("trigger");
+  while(roomProperty) {
+    triggers.push_back(Trigger(roomProperty));
+    roomProperty = roomProperty->next_sibling("trigger");
+  }
 }
 
 Room* Room::movement(std::string direction, const std::unordered_map<std::string, Object*>& roomMap) {
@@ -223,6 +229,27 @@ bool Room::find_object(std::string object) {
     return found;
   }
   return found;
+}
+
+void Room::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+  for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
+    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    if(needsDeletion) {
+      triggers.erase(trigger);
+    }
+  }
+  for(auto containterName: containers) {
+    auto container = objectMap[containterName];
+    container->find_triggers(input, objectMap, fired);
+  }
+  for(auto itemName: items) {
+    auto item = objectMap[itemName];
+    item->find_triggers(input, objectMap, fired);
+  }
+  for(auto creatureName: creatures) {
+    auto creature = objectMap[creatureName];
+    creature->find_triggers(input, objectMap, fired);
+  }
 }
 
 

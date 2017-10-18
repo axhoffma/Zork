@@ -36,6 +36,12 @@ Item::Item(rapidxml::xml_node<>* itemNode) {
     }
   }
   
+  itemProperty = itemNode->first_node("trigger");
+  while(itemProperty) {
+    triggers.push_back(Trigger(itemProperty));
+    itemProperty = itemProperty->next_sibling("trigger");
+  }
+  
 }
 
 void Item::read_writing() {
@@ -47,4 +53,13 @@ std::vector<std::string> Item::turn_on() {
     std::cout << print << std::endl;
   }
   return activationCommands.actions;
+}
+
+void Item::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+  for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
+    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    if(needsDeletion) {
+      triggers.erase(trigger);
+    }
+  }
 }

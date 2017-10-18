@@ -41,15 +41,22 @@ Container::Container(rapidxml::xml_node<>* containerNode) {
     containerProperty = containerProperty->next_sibling("item");
   }
   
+  //Add list of triggers to the container
+  containerProperty = containerNode->first_node("trigger");
+  while(containerProperty) {
+    triggers.push_back(Trigger(containerProperty));
+    containerProperty = containerProperty->next_sibling("trigger");
+  }
+  
 }
 
 Container::Container() {
-  set_name("Inventory");
+  set_name("inventory");
 }
 
 void Container::open_container() {
   std::cout << get_name();
-  if(get_name() == "Inventory" && items.size() == 0) {
+  if(get_name() == "inventory" && items.size() == 0) {
     std::cout << ": empty" << std::endl;
     return;
   }
@@ -105,5 +112,18 @@ bool Container::check_open() {
     }
   }
   return false;
+}
+
+void Container::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+  for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
+    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    if(needsDeletion) {
+      triggers.erase(trigger);
+    }
+  }
+  for(auto itemName: items) {
+    auto item = objectMap[itemName];
+    item->find_triggers(input, objectMap, fired);
+  }
 }
 

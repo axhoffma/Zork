@@ -10,11 +10,12 @@
 #define helper_hpp
 
 #include "Object.h"
-#include "Container.hpp"
-#include "Room.h"
-#include "Creature.hpp"
 #include <unordered_map>
 
+class Container;
+class Creature;
+class Item;
+class Room;
 
 //Add objects to a room or container
 void add(Object* object, Room* room);
@@ -26,14 +27,14 @@ void add(Item* item, Container* container);
 
 
 //Find an object on the map
-Object* find_object(std::string objectName, std::unordered_map<std::string, Object*>& objectMap);
+Object* find_object(std::string, std::unordered_map<std::string, Object*>&);
 
 //Delete an object from a Room or Container
-void delete_object(std::string objectToDelete, Object* objectToSearch);
+void delete_object(std::string, Object*);
 
 //Update the status of an object to a new string
-void update(Object* object, std::string newStatus);
+void update(Object*, std::string);
 
-void parse_commands(std::string command, std::unordered_map<std::string, Object*>& objectMap);
+void parse_commands(std::string, std::unordered_map<std::string, Object*>&);
 
 #endif /* helper_hpp */

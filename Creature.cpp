@@ -7,6 +7,7 @@
 //
 
 #include "Creature.hpp"
+#include "Condition.hpp"
 
 
 Creature::Creature(rapidxml::xml_node<>* creatureNode) {
@@ -30,6 +31,12 @@ Creature::Creature(rapidxml::xml_node<>* creatureNode) {
   while(creatureProperty) {
     vulnerabilities.push_back(creatureProperty->value());
     creatureProperty = creatureProperty->next_sibling("vulnerability");
+  }
+  //Get the list of triggers
+  creatureProperty = creatureNode->first_node("trigger");
+  while(creatureProperty) {
+    triggers.push_back(Trigger(creatureProperty));
+    creatureProperty = creatureProperty->next_sibling("trigger");
   }
   
   //Get the conditions
@@ -64,29 +71,7 @@ bool Creature::check_attack(std::string item) {
 bool Creature::execute_attack(std::unordered_map<std::string, Object*> objectMap) {
   int valid_attack = false;
   for(auto condition: conditions) {
-    bool isHas = condition.check_has();
-    if(isHas) {
-      auto owner = objectMap[condition.conditionOwner];
-      if(condition.conditionHas == "yes") {
-        bool found = owner->find_object(condition.conditionObject);
-        if(found) {
-          valid_attack = true;
-        }
-      }
-      else {
-        bool found = owner->find_object(condition.conditionObject);
-        if(!found) {
-          valid_attack = true;
-        }
-      }
-    }
-    else {
-      std::string objectName = condition.conditionObject;
-      auto object = objectMap[objectName];
-      if(object->get_status() == condition.conditionStatus) {
-        valid_attack = true;
-      }
-    }
+    valid_attack = condition.check_condition(objectMap);
   }
   if(valid_attack) {
     for(auto print: prints) {
@@ -99,26 +84,11 @@ bool Creature::execute_attack(std::unordered_map<std::string, Object*> objectMap
   return valid_attack;
 }
 
-bool Condition::check_has() {
-  if(conditionHas == "") {
-    return false;
-  }
-  return true;
-}
-
-Condition::Condition(rapidxml::xml_node<>* node) {
-  rapidxml::xml_node<>* conditionNode = node->first_node("object");
-  conditionObject = conditionNode->value();
-  conditionNode = node->first_node("has");
-  
-  //is a HAS condition
-  if(conditionNode) {
-    conditionHas = conditionNode->value();
-    conditionNode = node->first_node("owner");
-    conditionOwner = conditionNode->value();
-  }
-  else {
-    conditionNode = node->first_node("status");
-    conditionStatus = conditionNode->value();
+void Creature::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+  for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
+    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    if(needsDeletion) {
+      triggers.erase(trigger);
+    }
   }
 }

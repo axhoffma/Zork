@@ -20,6 +20,7 @@ struct turnOn {
 class Item : public Object {
   std::string writing;
   turnOn activationCommands;
+  std::vector<Trigger> triggers;
 public:
   Item(rapidxml::xml_node<>*);
   void read_writing();
@@ -28,6 +29,7 @@ public:
   inline bool find_object(std::string object) {
     return false;
   };
+  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
 };
 
 

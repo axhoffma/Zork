@@ -11,13 +11,12 @@
 
 #include "Object.h"
 #include "Item.hpp"
-#include "./rapidXML/rapidxml.hpp"
-#include <iostream>
-#include <algorithm>
+#include "Trigger.hpp"
 
 class Container : public Object {
   std::vector<std::string> items;
   std::vector<std::string> accepts;
+  std::vector<Trigger> triggers;
   
 public:
   Container(rapidxml::xml_node<>*);
@@ -37,6 +36,7 @@ public:
   inline bool find_object(std::string object) {
     return find_item(object);
   };
+  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
 };
 
 #endif /* Container_hpp */

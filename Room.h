@@ -21,6 +21,7 @@ class Room : public Object {
   std::vector<std::string> containers;
   std::vector<std::string> items;
   std::vector<std::string> creatures;
+  std::vector<Trigger> triggers;
 
 public:
 	Room(rapidxml::xml_node<>* node);
@@ -46,6 +47,7 @@ public:
   void remove_creature(std::string);
   
   bool find_object(std::string);
+  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
 };
 
 
