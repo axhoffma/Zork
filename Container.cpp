@@ -51,6 +51,7 @@ void Container::open_container() {
   else {
     std::cout << " is empty";
   }
+  opened = true;
   std::cout << std::endl;
 }
 
@@ -76,6 +77,14 @@ bool Container::check_accept(std::string item) {
     if(accepted_item == item) {
       return true;
     }
+  }
+  return false;
+}
+
+//Check if an item in the container can be taken
+bool Container::check_take() {
+  if(opened) {
+    return true;
   }
   return false;
 }

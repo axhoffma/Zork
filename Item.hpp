@@ -18,7 +18,7 @@ struct turnOn {
 };
 
 class Item : public Object {
-  std::string writing;
+  std::string writing = "Nothing written";
   turnOn activationCommands;
   std::vector<Trigger> triggers;
 public:

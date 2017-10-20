@@ -12,6 +12,11 @@
 #include "Creature.hpp"
 #include "Item.hpp"
 
+GameInformation::~GameInformation() {
+  //Deletion of currentRoom is handled by the objectMap
+  delete [] inventory;
+};
+
 //Add objects to a room
 void add(Object* object, Room* room) {
   
@@ -329,7 +334,7 @@ void parse_commands(std::string command, GameInformation& gameInfo) {
     }
   }
   if(tokens[0] == "Game" && tokens[1] == "Over") {
-    std::cout << "Game Over!" << std::endl;
+    std::cout << "Victory!" << std::endl;
     exit(0);
   }
   

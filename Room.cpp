@@ -127,9 +127,11 @@ bool Room::find_item(std::string item, const std::unordered_map<std::string, Obj
   for(auto container : containers) {
     auto search = containerMap.find(container);
     auto containerObject = dynamic_cast<Container*>(search->second);
-    found = containerObject->find_item(item);
-    if(found == true) {
-      return found;
+    if(containerObject->check_take()) {
+      found = containerObject->find_item(item);
+      if(found == true) {
+        return found;
+      }
     }
   }
   return found;

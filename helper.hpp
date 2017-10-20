@@ -21,6 +21,8 @@ struct GameInformation {
   std::unordered_map<std::string, Object*> objectMap;
   Room* currentRoom;
   Container* inventory;
+  
+  ~GameInformation();
 };
 
 //Add objects to a room or container

@@ -17,6 +17,7 @@ class Container : public Object {
   std::vector<std::string> items;
   std::vector<std::string> accepts;
   std::vector<Trigger> triggers;
+  bool opened = false;
   
 public:
   Container(rapidxml::xml_node<>*);
@@ -33,6 +34,7 @@ public:
   void open_container();
   bool check_accept(std::string item);
   bool check_open();
+  bool check_take();
   inline bool find_object(std::string object) {
     return find_item(object);
   };
