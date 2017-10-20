@@ -17,7 +17,6 @@
 #include <iterator>
 #include "helper.hpp"
 
-
 int main(int argc, char* argv[]) {
 	if(argc != 2) {
 		std::cout << "Zork usage: ./Zork [filename]" << std::endl;
@@ -29,10 +28,6 @@ int main(int argc, char* argv[]) {
 	rapidxml::xml_document<> doc;
 	doc.parse<0>(ifile.data());
 
-
-	//create an unordered map to store all of our  objects
-	std::unordered_map<std::string, Object*> objectMap;
-
 	//Map node is the first child of the XML overall tree
 	rapidxml::xml_node<>* mapNode = doc.first_node("map");
   
@@ -43,13 +38,15 @@ int main(int argc, char* argv[]) {
 		std::cout << "Could not find a valid room with the XML parser" <<std::endl;
 		return 0;
 	}
+  
+  GameInformation gameInfo;
 
 	//keep creating rooms while we have new ones
 	while(node) {
 		//create Room
 		Room* room = new Room(node);
 		//Add room to unordered map
-		objectMap.insert(std::make_pair(room->get_name(), room));
+		gameInfo.objectMap.insert(std::make_pair(room->get_name(), room));
 		//Get next room node
 		node = node->next_sibling("room");
 	}
@@ -62,7 +59,7 @@ int main(int argc, char* argv[]) {
   
   while(node) {
     Container* container = new Container(node);
-    objectMap.insert(std::make_pair(container->get_name(), container));
+    gameInfo.objectMap.insert(std::make_pair(container->get_name(), container));
     node = node->next_sibling("container");
   }
   
@@ -74,7 +71,7 @@ int main(int argc, char* argv[]) {
   
   while(node) {
     Item* item = new Item(node);
-    objectMap.insert(std::make_pair(item->get_name(), item));
+    gameInfo.objectMap.insert(std::make_pair(item->get_name(), item));
     node = node->next_sibling("item");
   }
   
@@ -86,15 +83,14 @@ int main(int argc, char* argv[]) {
   
   while(node) {
     Creature* creature = new Creature(node);
-    objectMap.insert(std::make_pair(creature->get_name(), creature));
+    gameInfo.objectMap.insert(std::make_pair(creature->get_name(), creature));
     node = node->next_sibling("creature");
   }
   
   //End creature creation
   
   //Create the player's inventory
-  auto inventory = new Container();
-  objectMap.insert(std::make_pair(inventory->get_name(), inventory));
+  gameInfo.inventory = new Container();
 
 
 	//END OF SETUP
@@ -102,12 +98,10 @@ int main(int argc, char* argv[]) {
 	//START OF GAMEPLAY
 
 	//Find the Entrance to start the game
-	auto search = objectMap.find("Entrance");
-	auto currentRoom = dynamic_cast<Room*>(search->second);
+	auto search = gameInfo.objectMap.find("Entrance");
+	gameInfo.currentRoom = dynamic_cast<Room*>(search->second);
   
-  //Add the Current Room to the map, this is used to look up room in other functions
-  objectMap.insert(std::make_pair("Current Room", currentRoom));
-  std::cout << currentRoom->get_description() << std::endl;
+  std::cout << gameInfo.currentRoom->get_description() << std::endl;
   
   //Start game
   bool exit_condition = false;
@@ -115,7 +109,7 @@ int main(int argc, char* argv[]) {
 		//Get user input
 		std::string input;
 		std::getline(std::cin, input);    
-    parse_user_commands(input, objectMap);
+    parse_user_commands(input, gameInfo);
 	}
 
 

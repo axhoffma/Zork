@@ -27,39 +27,22 @@ int direction_to_array(std::string direction) {
 }
 
 
-Room::Room(rapidxml::xml_node<>* roomNode) {
-	rapidxml::xml_node<>* roomProperty = roomNode->first_node("name");
-	set_name(roomProperty->value());
-  
-  //Get the description of the room
-  roomProperty = roomNode->first_node("description");
-  set_description(roomProperty->value());
-  
-  //Get the status of the room
-  roomProperty = roomNode->first_node("status");
-  if(roomProperty != nullptr) {
-    set_status(roomProperty->value());
-  }
+Room::Room(rapidxml::xml_node<>* roomNode) : Object(roomNode) {
   
   //Get the type of the room
-  roomProperty = roomNode->first_node("type");
+  rapidxml::xml_node<>* roomProperty = roomNode->first_node("type");
   if(roomProperty != nullptr) {
     type = roomProperty->value();
   }
   
   
+  //Get the borders in the room
 	roomProperty = roomNode->first_node("border");
-  
-	//Keep adding borders while there is another valid one
 	while(roomProperty) {
-    //Find the direction node
 		rapidxml::xml_node<>* borderNode = roomProperty->first_node("direction");
-		//get the index location for border from the cardinal direction
 		int borderIndex = direction_to_array(borderNode->value());
-		//get the name of the border location, and store it in the index
 		borderNode = roomProperty->first_node("name");
 		border[borderIndex] = std::string(borderNode->value());
-    //advance to the next border node
 		roomProperty = roomProperty->next_sibling("border");
 	}
   
@@ -83,33 +66,35 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
     creatures.push_back(roomProperty->value());
     roomProperty = roomProperty->next_sibling("creature");
   }
+  
   //Add the list of triggers that are in the room
   roomProperty = roomNode->first_node("trigger");
   while(roomProperty) {
     triggers.push_back(Trigger(roomProperty));
     roomProperty = roomProperty->next_sibling("trigger");
   }
+  
 }
 
-Room* Room::movement(std::string direction, const std::unordered_map<std::string, Object*>& roomMap) {
+Room* Room::movement(std::string direction, GameInformation& gameInfo) {
   int index = direction_to_array(direction);
   std::string roomName = border[index];
   if(roomName == "") {
     std::cout << "Can't go that way" <<std::endl;
-    return this;
+    return this;;
   }
   
-  auto search = roomMap.find(roomName);
+  auto search = gameInfo.objectMap.find(roomName);
   
   //Must take into account if the room was removed
-  if(search == roomMap.end()) {
+  if(search == gameInfo.objectMap.end()) {
     std::cout << "Can't go that way" <<std::endl;
-    return this;
+    return this;;
   }
   
-  Room* newRoom = dynamic_cast<Room*>(search->second);
+  auto newRoom = dynamic_cast<Room*>(search->second);
   std::cout << newRoom->get_description() << std::endl;
-  return newRoom;  
+  return newRoom;
 }
 
 bool Room::exit_check() {
@@ -231,24 +216,24 @@ bool Room::find_object(std::string object) {
   return found;
 }
 
-void Room::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+void Room::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
-    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);
     if(needsDeletion) {
       triggers.erase(trigger);
     }
   }
   for(auto containterName: containers) {
-    auto container = objectMap[containterName];
-    container->find_triggers(input, objectMap, fired);
+    auto container = gameInfo.objectMap[containterName];
+    container->find_triggers(input, gameInfo, fired);
   }
   for(auto itemName: items) {
-    auto item = objectMap[itemName];
-    item->find_triggers(input, objectMap, fired);
+    auto item = gameInfo.objectMap[itemName];
+    item->find_triggers(input, gameInfo, fired);
   }
   for(auto creatureName: creatures) {
-    auto creature = objectMap[creatureName];
-    creature->find_triggers(input, objectMap, fired);
+    auto creature = gameInfo.objectMap[creatureName];
+    creature->find_triggers(input, gameInfo, fired);
   }
 }
 

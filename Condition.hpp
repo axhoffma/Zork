@@ -13,6 +13,7 @@
 #include "./rapidXML/rapidxml.hpp"
 #include <unordered_map>
 
+struct GameInformation;
 class Object;
 
 struct Condition {
@@ -22,7 +23,7 @@ struct Condition {
   std::string conditionStatus;
   Condition(rapidxml::xml_node<>*);
   bool check_has();
-  bool check_condition(std::unordered_map<std::string, Object*>&);
+  bool check_condition(GameInformation&);
 };
 
 #endif /* Condition_hpp */
