@@ -55,9 +55,9 @@ std::vector<std::string> Item::turn_on() {
   return activationCommands.actions;
 }
 
-void Item::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+void Item::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
-    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);
     if(needsDeletion) {
       triggers.erase(trigger);
     }

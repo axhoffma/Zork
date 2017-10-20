@@ -17,6 +17,8 @@
 #include "Trigger.hpp"
 #include "./rapidXML/rapidxml.hpp"
 
+struct GameInformation;
+
 class Object {
 private:
 	std::string name;
@@ -25,6 +27,9 @@ private:
 
 public:
 	virtual ~Object();
+  Object(rapidxml::xml_node<>*);
+  //Only use for base constructor is to make the inventory
+  Object() : name{"inventory"} {};
 
 
 	std::string get_name();
@@ -35,7 +40,7 @@ public:
 	std::string get_description();
 	void set_description(std::string);
   virtual bool find_object(std::string object) = 0;
-  virtual void find_triggers(std::string, std::unordered_map<std::string, Object*>&, bool&) = 0;
+  virtual void find_triggers(std::string, GameInformation& gameInfo, bool&) = 0;
 
 };
 

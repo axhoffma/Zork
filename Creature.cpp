@@ -10,24 +10,10 @@
 #include "Condition.hpp"
 
 
-Creature::Creature(rapidxml::xml_node<>* creatureNode) {
-  rapidxml::xml_node<>* creatureProperty = creatureNode->first_node("name");
-  set_name(creatureProperty->value());
-  
-  //Get the description of the creature
-  creatureProperty = creatureNode->first_node("description");
-  if(creatureProperty != nullptr) {
-    set_description(creatureProperty->value());
-  }
-  
-  //Get the status of the creature
-  creatureProperty = creatureNode->first_node("status");
-  if(creatureProperty != nullptr) {
-    set_status(creatureProperty->value());
-  }
+Creature::Creature(rapidxml::xml_node<>* creatureNode) : Object(creatureNode) {
   
   //Get the list of vulnerabilitiees
-  creatureProperty = creatureNode->first_node("vulnerability");
+  rapidxml::xml_node<>* creatureProperty = creatureNode->first_node("vulnerability");
   while(creatureProperty) {
     vulnerabilities.push_back(creatureProperty->value());
     creatureProperty = creatureProperty->next_sibling("vulnerability");
@@ -70,28 +56,28 @@ bool Creature::check_attack(std::string item) {
   return false;
 }
 
-bool Creature::execute_attack(std::unordered_map<std::string, Object*> objectMap) {
+bool Creature::execute_attack(GameInformation& gameInfo) {
   int valid_attack = false;
   if(conditions.size() == 0) {
     valid_attack = true;
   }
   for(auto condition: conditions) {
-    valid_attack = condition.check_condition(objectMap);
+    valid_attack = condition.check_condition(gameInfo);
   }
   if(valid_attack) {
     for(auto print: prints) {
       std::cout << print << std::endl;
     }
     for(auto action : actions) {
-      parse_commands(action, objectMap);
+      parse_commands(action, gameInfo);
     }
   }
   return valid_attack;
 }
 
-void Creature::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+void Creature::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
-    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);
     if(needsDeletion) {
       triggers.erase(trigger);
     }
