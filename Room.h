@@ -26,7 +26,7 @@ class Room : public Object {
 public:
 	Room(rapidxml::xml_node<>* node);
 	bool exit_check();
-  Room* movement(std::string direction, const std::unordered_map<std::string, Object*>&);
+  Room* movement(std::string direction, GameInformation&);
   bool find_container(std::string);
   inline void add_container(std::string container) {
     containers.push_back(container);
@@ -47,7 +47,7 @@ public:
   void remove_creature(std::string);
   
   bool find_object(std::string);
-  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
+  void find_triggers(std::string input, GameInformation&, bool&);
 };
 
 

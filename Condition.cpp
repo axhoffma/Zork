@@ -8,6 +8,7 @@
 
 #include "Condition.hpp"
 #include "Object.h"
+#include "Container.hpp"
 
 bool Condition::check_has() {
   if(conditionHas == "") {
@@ -33,11 +34,17 @@ Condition::Condition(rapidxml::xml_node<>* node) {
   }
 }
 
-bool Condition::check_condition(std::unordered_map<std::string, Object*>& objectMap) {
+bool Condition::check_condition(GameInformation& gameInfo) {
   bool good_condition = false;
   bool isHas = check_has();
   if(isHas) {
-    auto owner = objectMap[conditionOwner];
+    Object* owner;
+    if(conditionOwner == "inventory") {
+      owner = dynamic_cast<Object*>(gameInfo.inventory);
+    }
+    else {
+      owner = gameInfo.objectMap[conditionOwner];
+    }
     if(conditionHas == "yes") {
       bool found = owner->find_object(conditionObject);
       if(found) {
@@ -53,7 +60,7 @@ bool Condition::check_condition(std::unordered_map<std::string, Object*>& object
   }
   else {
     std::string objectName = conditionObject;
-    auto object = objectMap[objectName];
+    auto object = gameInfo.objectMap[objectName];
     if(object->get_status() == conditionStatus) {
       good_condition = true;
     }

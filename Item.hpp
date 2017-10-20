@@ -29,7 +29,7 @@ public:
   inline bool find_object(std::string object) {
     return false;
   };
-  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
+  void find_triggers(std::string input, GameInformation&, bool&);
 };
 
 

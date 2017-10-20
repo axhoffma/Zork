@@ -96,16 +96,16 @@ bool Container::check_open() {
   return false;
 }
 
-void Container::find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+void Container::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
-    bool needsDeletion = trigger->trigger_check(input, objectMap, fired);
+    bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);
     if(needsDeletion) {
       triggers.erase(trigger);
     }
   }
   for(auto itemName: items) {
-    auto item = objectMap[itemName];
-    item->find_triggers(input, objectMap, fired);
+    auto item = gameInfo.objectMap[itemName];
+    item->find_triggers(input, gameInfo, fired);
   }
 }
 

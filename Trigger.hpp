@@ -17,6 +17,7 @@
 #include <iostream>
 #include "helper.hpp"
 
+struct GameInformation;
 class Trigger {
   std::vector<std::string> actions;
   std::vector<std::string> prints;
@@ -26,7 +27,7 @@ class Trigger {
   
 public:
   Trigger(rapidxml::xml_node<>*);
-  bool trigger_check(std::string command, std::unordered_map<std::string, Object*>&, bool&);
+  bool trigger_check(std::string command, GameInformation&, bool&);
 };
 
 

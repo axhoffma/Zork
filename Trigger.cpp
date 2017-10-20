@@ -39,12 +39,12 @@ Trigger::Trigger(rapidxml::xml_node<>* triggerNode) {
   
 }
 
-bool Trigger::trigger_check(std::string command, std::unordered_map<std::string, Object*>& objectMap, bool& fired) {
+bool Trigger::trigger_check(std::string command, GameInformation& gameInfo, bool& fired) {
   bool valid_trigger = true;
   bool delete_trigger = false;
   
   for(auto condition : conditions) {
-    if(!condition.check_condition(objectMap)) {
+    if(!condition.check_condition(gameInfo)) {
       valid_trigger = false;
     }
   }
@@ -58,7 +58,7 @@ bool Trigger::trigger_check(std::string command, std::unordered_map<std::string,
       std::cout << print << std::endl;
     }
     for(auto action : actions) {
-      parse_commands(action, objectMap);
+      parse_commands(action, gameInfo);
     }
     if(type == "single") {
       delete_trigger = true;

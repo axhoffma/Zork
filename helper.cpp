@@ -87,43 +87,40 @@ void update(Object* object, std::string newStatus) {
   object->set_status(newStatus);
 }
 
-void parse_user_commands(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool user) {
+void parse_user_commands(std::string input, GameInformation& gameInfo, bool user) {
   bool triggerFired = false;
   bool& triggerPass = triggerFired;
-  auto currentRoom = dynamic_cast<Room*>(objectMap["Current Room"]);
-  auto inventory = dynamic_cast<Container*>(objectMap["inventory"]);
   //only check triggers if user starts the command
   if(user) {
-    currentRoom->find_triggers(input, objectMap, triggerPass);
-    inventory->find_triggers(input, objectMap, triggerPass);
+    gameInfo.currentRoom->find_triggers(input, gameInfo, triggerPass);
+    gameInfo.inventory->find_triggers(input, gameInfo, triggerPass);
   }
   std::istringstream iss{input};
   std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
   if(!triggerFired) {
     //n, s, e, w
     if(tokens[0] == "n" || tokens[0] == "s" || tokens[0] == "e" || tokens[0] == "w") {
-      
-      currentRoom = currentRoom->movement(input, objectMap);
+      gameInfo.currentRoom = gameInfo.currentRoom->movement(input, gameInfo);
     }
     
     //open exit
     else if(input == "open exit") {
-      if(currentRoom->exit_check()) {
+      if(gameInfo.currentRoom->exit_check()) {
         exit(0);
       }
     }
     
     //i
     else if(tokens[0] == "i") {
-      inventory->open_container();
+      gameInfo.inventory->open_container();
     }
     
     //open (container)
     else if(tokens[0] == "open" && tokens.size() == 2) {
       std::string containerName = tokens[1];
-      bool found = currentRoom->find_container(containerName);
+      bool found = gameInfo.currentRoom->find_container(containerName);
       if(found) {
-        auto containerSearch = objectMap.find(containerName);
+        auto containerSearch = gameInfo.objectMap.find(containerName);
         auto container = dynamic_cast<Container*>(containerSearch->second);
         auto openable = container->check_open();
         if(openable) {
@@ -140,16 +137,16 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     
     //put (item) in (container)
     else if(tokens[0] == "put" && tokens.size() == 4) {
-      bool found = inventory->find_item(tokens[1]);
+      bool found = gameInfo.inventory->find_item(tokens[1]);
       if(found) {
-        bool containerFound = currentRoom->find_container(tokens[3]);
+        bool containerFound = gameInfo.currentRoom->find_container(tokens[3]);
         if(containerFound) {
-          auto containerSearch = objectMap.find(tokens[3]);
+          auto containerSearch = gameInfo.objectMap.find(tokens[3]);
           auto container = dynamic_cast<Container*>(containerSearch->second);
           bool allowedInsert = container->check_accept(tokens[1]);
           if(allowedInsert) {
             container->add_item(tokens[1]);
-            inventory->remove_item(tokens[1]);
+            gameInfo.inventory->remove_item(tokens[1]);
             std::cout << "Item " << tokens[1] << " added to " << tokens[3] << std::endl;
           }
           else {
@@ -170,10 +167,10 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     //take (item)
     else if(tokens[0] == "take" && tokens.size() == 2) {
       std::string itemName = tokens[1];
-      bool found = currentRoom->find_item(itemName, objectMap);
+      bool found = gameInfo.currentRoom->find_item(itemName, gameInfo.objectMap);
       if(found) {
-        inventory->add_item(itemName);
-        currentRoom->remove_item(itemName, objectMap);
+        gameInfo.inventory->add_item(itemName);
+        gameInfo.currentRoom->remove_item(itemName, gameInfo.objectMap);
         
         std::cout << "Item " << itemName << " added to inventory" << std::endl;
       }
@@ -185,10 +182,10 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     //drop (item)
     else if(tokens[0]== "drop" && tokens.size() == 2) {
       std::string itemName = tokens[1];
-      bool found = inventory->find_item(itemName);
+      bool found = gameInfo.inventory->find_item(itemName);
       if(found) {
-        inventory->remove_item(itemName);
-        currentRoom->add_item(itemName);
+        gameInfo.inventory->remove_item(itemName);
+        gameInfo.currentRoom->add_item(itemName);
         std::cout << itemName << " dropped" << std::endl;
       }
       else {
@@ -199,9 +196,9 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     //read (item)
     else if(tokens[0] == "read" && tokens.size() == 2) {
       std::string itemName = tokens[1];
-      bool found = inventory->find_item(itemName);
+      bool found = gameInfo.inventory->find_item(itemName);
       if(found) {
-        auto search = objectMap.find(itemName);
+        auto search = gameInfo.objectMap.find(itemName);
         auto item = dynamic_cast<Item*>(search->second);
         item->read_writing();
       }
@@ -213,13 +210,13 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     //turn on (item)
     else if(tokens[0] == "turn" && tokens[1] == "on" && tokens.size() == 3) {
       std::string itemName = tokens[2];
-      bool found = inventory->find_item(itemName);
+      bool found = gameInfo.inventory->find_item(itemName);
       if(found) {
-        Item* item = dynamic_cast<Item*>(objectMap[itemName]);
+        Item* item = dynamic_cast<Item*>(gameInfo.objectMap[itemName]);
         //Get the vector of actions to perform
         auto actions = item->turn_on();
         for(auto action : actions) {
-          parse_commands(action, objectMap);
+          parse_commands(action, gameInfo);
         }
       }
       else {
@@ -231,16 +228,16 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     else if(tokens[0] == "attack" && tokens[2] == "with" && tokens.size() == 4) {
       std::string itemName = tokens[3];
       std::string creatureName = tokens[1];
-      bool found = currentRoom->find_creature(creatureName);
+      bool found = gameInfo.currentRoom->find_creature(creatureName);
       if(found) {
-        found = inventory->find_item(itemName);
+        found = gameInfo.inventory->find_item(itemName);
         if(found) {
-          Creature* creature = dynamic_cast<Creature*>(objectMap[creatureName]);
+          Creature* creature = dynamic_cast<Creature*>(gameInfo.objectMap[creatureName]);
           bool effective = creature->check_attack(itemName);
           if(effective) {
             //Check the attack conditions
             std::cout << "You attack " << creatureName << " with " << itemName << "!" << std::endl;
-            creature->execute_attack(objectMap);
+            creature->execute_attack(gameInfo);
           }
           else {
             std::cout << "The item has no effect!" << std::endl;
@@ -264,30 +261,30 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     }
     //only recheck triggers if it is a user command
     if(user) {
-      currentRoom->find_triggers("", objectMap, triggerPass);
-      inventory->find_triggers("", objectMap, triggerPass);
+      gameInfo.currentRoom->find_triggers("", gameInfo, triggerPass);
+      gameInfo.inventory->find_triggers("", gameInfo, triggerPass);
       while(triggerPass) {
         triggerPass = false;
-        currentRoom->find_triggers("", objectMap, triggerPass);
-        inventory->find_triggers("", objectMap, triggerPass);
+        gameInfo.currentRoom->find_triggers("", gameInfo, triggerPass);
+        gameInfo.inventory->find_triggers("", gameInfo, triggerPass);
       }
     }
   }
 }
 
 
-void parse_commands(std::string command, std::unordered_map<std::string, Object*>& objectMap) {
+void parse_commands(std::string command, GameInformation& gameInfo) {
   //Separate the input words for easy analysis
   std::istringstream iss{command};
   std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
   
   //Check if the command matches a possible user command
-  parse_user_commands(command, objectMap, false);
+  parse_user_commands(command, gameInfo, false);
   
   //Option 1: Update (object) to (status)
   if(tokens[0] == "Update") {
-    auto search = objectMap.find(tokens[1]);
-    if(search != objectMap.end()) {
+    auto search = gameInfo.objectMap.find(tokens[1]);
+    if(search != gameInfo.objectMap.end()) {
       Object* object = search->second;
       update(object, tokens[3]);
     }
@@ -295,11 +292,11 @@ void parse_commands(std::string command, std::unordered_map<std::string, Object*
   
   //Option 2: Add (object) to (room/container)
   if(tokens[0] == "Add") {
-    auto search = objectMap.find(tokens[1]);
-    if(search != objectMap.end()) {
+    auto search = gameInfo.objectMap.find(tokens[1]);
+    if(search != gameInfo.objectMap.end()) {
       Object* object = search->second;
-      search = objectMap.find(tokens[3]);
-      if(search != objectMap.end()) {
+      search = gameInfo.objectMap.find(tokens[3]);
+      if(search != gameInfo.objectMap.end()) {
         Object* addTo = search->second;
         if(dynamic_cast<Room*>(addTo) != NULL) {
           Room* room = dynamic_cast<Room*>(addTo);
@@ -315,17 +312,17 @@ void parse_commands(std::string command, std::unordered_map<std::string, Object*
   
   //Option 3: Delete (object)
   if(tokens[0] == "Delete") {
-    auto search = objectMap.find(tokens[1]);
-    if(search != objectMap.end()) {
+    auto search = gameInfo.objectMap.find(tokens[1]);
+    if(search != gameInfo.objectMap.end()) {
       Object* object = search->second;
       
       //If it is a room, just remove the room from the map
       if(dynamic_cast<Room*>(object) != NULL) {
-        objectMap.erase(object->get_name());
+        gameInfo.objectMap.erase(object->get_name());
       }
       
       //Search every Object and remove references
-      for(auto mapElement : objectMap) {
+      for(auto mapElement : gameInfo.objectMap) {
         Object* mapObject = mapElement.second;
         delete_object(tokens[1], mapObject);
       }

@@ -22,12 +22,12 @@ class Creature : public Object {
   
 public:
   Creature(rapidxml::xml_node<>*);
-  bool check_attack(std::string item);
-  bool execute_attack(std::unordered_map<std::string, Object*>);
+  bool check_attack(std::string);
+  bool execute_attack(GameInformation&);
   inline bool find_object(std::string object) {
     return false;
   };
-  void find_triggers(std::string input, std::unordered_map<std::string, Object*>& objectMap, bool&);
+  void find_triggers(std::string, GameInformation&, bool&);
 };
 
 #endif /* Creature_hpp */
