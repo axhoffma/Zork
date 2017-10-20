@@ -14,8 +14,8 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include "Trigger.hpp"
 #include "./rapidXML/rapidxml.hpp"
-
 
 class Object {
 private:
@@ -35,6 +35,7 @@ public:
 	std::string get_description();
 	void set_description(std::string);
   virtual bool find_object(std::string object) = 0;
+  virtual void find_triggers(std::string, std::unordered_map<std::string, Object*>&, bool&) = 0;
 
 };
 
