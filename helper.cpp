@@ -12,7 +12,7 @@
 #include "Creature.hpp"
 #include "Item.hpp"
 
-//Add objects to a room or container
+//Add objects to a room
 void add(Object* object, Room* room) {
   
   //Check if the object is a container
@@ -25,9 +25,9 @@ void add(Object* object, Room* room) {
     room->add_item(object->get_name());
   }
   
-  //else if(dynamic_cast<Creature*>(object) != NULL) {
-  //room->add_creature(object->get_name());
-  //}
+  else if(dynamic_cast<Creature*>(object) != NULL) {
+    room->add_creature(object->get_name());
+  }
 }
 
 //Add an item to a container
@@ -104,7 +104,6 @@ void parse_user_commands(std::string input, std::unordered_map<std::string, Obje
     if(tokens[0] == "n" || tokens[0] == "s" || tokens[0] == "e" || tokens[0] == "w") {
       
       currentRoom = currentRoom->movement(input, objectMap);
-      objectMap["Current Room"] = currentRoom;
     }
     
     //open exit
