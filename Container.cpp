@@ -9,34 +9,18 @@
 #include "Container.hpp"
 
 
-Container::Container(rapidxml::xml_node<>* containerNode) {
-  rapidxml::xml_node<>* containerProperty = containerNode->first_node("name");
-  set_name(containerProperty->value());
-  
-  //Get the description of the container
-  containerProperty = containerNode->first_node("description");
-  if(containerProperty != nullptr) {
-    set_description(containerProperty->value());
-  }
-  
-  //Get the status of the container
-  containerProperty = containerNode->first_node("status");
-  if(containerProperty != nullptr) {
-    set_status(containerProperty->value());
-  }
+Container::Container(rapidxml::xml_node<>* containerNode) : Object(containerNode) {
   
   //Get the list of accepts
-  containerProperty = containerNode->first_node("accept");
+  rapidxml::xml_node<>* containerProperty = containerNode->first_node("accept");
   while(containerProperty) {
     accepts.push_back(containerProperty->value());
     containerProperty = containerProperty->next_sibling("accept");
   }
   
-  
   //Add list of items to the container
   containerProperty = containerNode->first_node("item");
   while(containerProperty) {
-    //insert the name of the item to the Items vector
     items.push_back(containerProperty->value());
     containerProperty = containerProperty->next_sibling("item");
   }
@@ -50,9 +34,7 @@ Container::Container(rapidxml::xml_node<>* containerNode) {
   
 }
 
-Container::Container() {
-  set_name("inventory");
-}
+Container::Container() : Object() {};
 
 void Container::open_container() {
   std::cout << get_name();

@@ -27,39 +27,22 @@ int direction_to_array(std::string direction) {
 }
 
 
-Room::Room(rapidxml::xml_node<>* roomNode) {
-	rapidxml::xml_node<>* roomProperty = roomNode->first_node("name");
-	set_name(roomProperty->value());
-  
-  //Get the description of the room
-  roomProperty = roomNode->first_node("description");
-  set_description(roomProperty->value());
-  
-  //Get the status of the room
-  roomProperty = roomNode->first_node("status");
-  if(roomProperty != nullptr) {
-    set_status(roomProperty->value());
-  }
+Room::Room(rapidxml::xml_node<>* roomNode) : Object(roomNode) {
   
   //Get the type of the room
-  roomProperty = roomNode->first_node("type");
+  rapidxml::xml_node<>* roomProperty = roomNode->first_node("type");
   if(roomProperty != nullptr) {
     type = roomProperty->value();
   }
   
   
+  //Get the borders in the room
 	roomProperty = roomNode->first_node("border");
-  
-	//Keep adding borders while there is another valid one
 	while(roomProperty) {
-    //Find the direction node
 		rapidxml::xml_node<>* borderNode = roomProperty->first_node("direction");
-		//get the index location for border from the cardinal direction
 		int borderIndex = direction_to_array(borderNode->value());
-		//get the name of the border location, and store it in the index
 		borderNode = roomProperty->first_node("name");
 		border[borderIndex] = std::string(borderNode->value());
-    //advance to the next border node
 		roomProperty = roomProperty->next_sibling("border");
 	}
   
@@ -83,12 +66,14 @@ Room::Room(rapidxml::xml_node<>* roomNode) {
     creatures.push_back(roomProperty->value());
     roomProperty = roomProperty->next_sibling("creature");
   }
+  
   //Add the list of triggers that are in the room
   roomProperty = roomNode->first_node("trigger");
   while(roomProperty) {
     triggers.push_back(Trigger(roomProperty));
     roomProperty = roomProperty->next_sibling("trigger");
   }
+  
 }
 
 Room* Room::movement(std::string direction, const std::unordered_map<std::string, Object*>& roomMap) {

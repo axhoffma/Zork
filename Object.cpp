@@ -9,6 +9,26 @@
 
 Object::~Object() {}
 
+Object::Object(rapidxml::xml_node<>* node) {
+  
+  //Assign the name of the object
+  rapidxml::xml_node<>* objectProperty = node->first_node("name");
+  name = objectProperty->value();
+  
+  //Get the status of the object
+  objectProperty = node->first_node("status");
+  if(objectProperty != nullptr) {
+    status = objectProperty->value();
+  }
+  
+  //Get the description of the object
+  objectProperty = node->first_node("description");
+  if(objectProperty != nullptr) {
+    description = objectProperty->value();
+  }
+  
+};
+
 void Object::set_name(std::string name) {
 	this->name = name;
 }

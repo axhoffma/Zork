@@ -10,24 +10,10 @@
 #include "Condition.hpp"
 
 
-Creature::Creature(rapidxml::xml_node<>* creatureNode) {
-  rapidxml::xml_node<>* creatureProperty = creatureNode->first_node("name");
-  set_name(creatureProperty->value());
-  
-  //Get the description of the creature
-  creatureProperty = creatureNode->first_node("description");
-  if(creatureProperty != nullptr) {
-    set_description(creatureProperty->value());
-  }
-  
-  //Get the status of the creature
-  creatureProperty = creatureNode->first_node("status");
-  if(creatureProperty != nullptr) {
-    set_status(creatureProperty->value());
-  }
+Creature::Creature(rapidxml::xml_node<>* creatureNode) : Object(creatureNode) {
   
   //Get the list of vulnerabilitiees
-  creatureProperty = creatureNode->first_node("vulnerability");
+  rapidxml::xml_node<>* creatureProperty = creatureNode->first_node("vulnerability");
   while(creatureProperty) {
     vulnerabilities.push_back(creatureProperty->value());
     creatureProperty = creatureProperty->next_sibling("vulnerability");

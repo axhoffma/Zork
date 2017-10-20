@@ -25,6 +25,9 @@ private:
 
 public:
 	virtual ~Object();
+  Object(rapidxml::xml_node<>*);
+  //Only use for base constructor is to make the inventory
+  Object() : name{"inventory"} {};
 
 
 	std::string get_name();
