@@ -47,7 +47,7 @@ Creature::Creature(rapidxml::xml_node<>* creatureNode) : Object(creatureNode) {
   
 }
 
-bool Creature::check_attack(std::string item) {
+bool Creature::check_attack(std::string item) const{
   for(auto weakness : vulnerabilities) {
     if(item == weakness) {
       return true;
@@ -56,7 +56,7 @@ bool Creature::check_attack(std::string item) {
   return false;
 }
 
-bool Creature::execute_attack(GameInformation& gameInfo) {
+bool Creature::execute_attack(GameInformation& gameInfo) const{
   int valid_attack = false;
   if(conditions.size() == 0) {
     valid_attack = true;

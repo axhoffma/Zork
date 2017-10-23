@@ -219,7 +219,10 @@ bool Room::find_object(std::string object) {
 }
 
 void Room::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
+  
+  //Search the list of triggers
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
+    //Check if the trigger's conditions are met, and if it is of type single
     bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);
     if(needsDeletion) {
       triggers.erase(trigger);
