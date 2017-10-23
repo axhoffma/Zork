@@ -12,7 +12,7 @@
 #include "Object.h"
 #include "helper.hpp"
 #include <unordered_map>
-class Condition;
+struct Condition;
 class Creature : public Object {
   std::vector<std::string> vulnerabilities;
   std::vector<std::string> actions;
@@ -22,8 +22,8 @@ class Creature : public Object {
   
 public:
   Creature(rapidxml::xml_node<>*);
-  bool check_attack(std::string);
-  bool execute_attack(GameInformation&);
+  bool check_attack(std::string) const;
+  bool execute_attack(GameInformation&) const;
   inline bool find_object(std::string object) {
     return false;
   };

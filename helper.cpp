@@ -40,9 +40,6 @@ void add(Item* item, Container* container) {
   container->add_item(item->get_name());
 }
 
-
-
-
 //Find an object on the map
 Object* find_object(std::string objectName, std::unordered_map<std::string, Object*>& objectMap) {
   auto search = objectMap.find(objectName);

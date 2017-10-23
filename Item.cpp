@@ -9,12 +9,10 @@
 #include "Item.hpp"
 
 
-Item::Item(rapidxml::xml_node<>* itemNode) {
-  rapidxml::xml_node<>* itemProperty = itemNode->first_node("name");
-  set_name(itemProperty->value());
+Item::Item(rapidxml::xml_node<>* itemNode) : Object(itemNode){
   
   //Add writing to the item
-  itemProperty = itemNode->first_node("writing");
+  rapidxml::xml_node<>* itemProperty = itemNode->first_node("writing");
   if(itemProperty != nullptr) {
     writing = itemProperty->value();
   }
