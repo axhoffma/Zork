@@ -89,22 +89,6 @@ bool Container::check_take() {
   return false;
 }
 
-//Check if the container can be opened
-bool Container::check_open() {
-  if(accepts.size() == 0) {
-    return true;
-  }
-  for(auto item : items) {
-    //Condition to check is if an accept is in the inventory
-    for(auto accepted_item : accepts) {
-      if(accepted_item == item) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
 void Container::find_triggers(std::string input, GameInformation& gameInfo, bool& fired) {
   for(auto trigger = std::begin(triggers); trigger < std::end(triggers); ++trigger) {
     bool needsDeletion = trigger->trigger_check(input, gameInfo, fired);

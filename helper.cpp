@@ -124,13 +124,7 @@ void parse_user_commands(std::string input, GameInformation& gameInfo, bool user
       if(found) {
         auto containerSearch = gameInfo.objectMap.find(containerName);
         auto container = dynamic_cast<Container*>(containerSearch->second);
-        auto openable = container->check_open();
-        if(openable) {
-          container->open_container();
-        }
-        else {
-          std::cout << "You can't open it" << std::endl;
-        }
+        container->open_container();
       }
       else {
         std::cout << "Error: that container is not in this room" << std::endl;
