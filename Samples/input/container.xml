@@ -39,7 +39,6 @@
   <room>
     <type>exit</type>
     <name>Staircase</name>
-    <container>container</container>
     <description>You are about to get out of middle earth to the 21s century but there is a lock in which no key can open but an axe to wreck</description>
     <border>
       <name>Main</name>
