@@ -20,7 +20,6 @@
 
 /* Begin PBXFileReference section */
 		37AA692B1F92D0A600F9028C /* Zork */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Zork; sourceTree = BUILT_PRODUCTS_DIR; };
-		37AA694D1F93050D00F9028C /* rapidXML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = rapidXML; sourceTree = SOURCE_ROOT; };
 		37E5F0B61FB8FF100017899F /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -39,7 +38,6 @@
 			isa = PBXGroup;
 			children = (
 				37E5F0B61FB8FF100017899F /* src */,
-				37AA694D1F93050D00F9028C /* rapidXML */,
 				37AA692C1F92D0A600F9028C /* Products */,
 			);
 			sourceTree = "<group>";
