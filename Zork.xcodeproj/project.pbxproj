@@ -41,6 +41,7 @@
 				37AA692C1F92D0A600F9028C /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		37AA692C1F92D0A600F9028C /* Products */ = {
 			isa = PBXGroup;

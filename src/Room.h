@@ -16,16 +16,16 @@
 
 
 class Room : public Object {
-	std::string type = "regular";
-	std::array<std::string, 4> border;
+  std::string type = "regular";
+  std::array<std::string, 4> border;
   std::vector<std::string> containers;
   std::vector<std::string> items;
   std::vector<std::string> creatures;
   std::vector<Trigger> triggers;
-
+  
 public:
-	Room(rapidxml::xml_node<>* node);
-	bool exit_check();
+  Room(rapidxml::xml_node<>* node);
+  bool exit_check();
   Room* movement(std::string direction, GameInformation&);
   bool find_container(std::string);
   inline void add_container(std::string container) {

@@ -30,7 +30,7 @@ Object::Object(rapidxml::xml_node<>* node) {
 };
 
 std::string Object::get_name() const {
-	return this->name;
+  return this->name;
 }
 
 void Object::set_description(std::string description) {

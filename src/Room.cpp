@@ -9,21 +9,21 @@
 #include "Room.h"
 
 int direction_to_array(std::string direction) {
-	int arrayIndex = -1;
+  int arrayIndex = -1;
   if(direction == "north" || direction == "n") {
-		arrayIndex = 0;
-	}
-	if(direction == "east" || direction == "e") {
-		arrayIndex = 1;
-	}
-	if(direction == "south"|| direction == "s") {
-		arrayIndex = 2;
-	}
-	if(direction == "west" || direction == "w") {
-		arrayIndex = 3;
-	}
-
-	return arrayIndex;
+    arrayIndex = 0;
+  }
+  if(direction == "east" || direction == "e") {
+    arrayIndex = 1;
+  }
+  if(direction == "south"|| direction == "s") {
+    arrayIndex = 2;
+  }
+  if(direction == "west" || direction == "w") {
+    arrayIndex = 3;
+  }
+  
+  return arrayIndex;
 }
 
 
@@ -37,14 +37,14 @@ Room::Room(rapidxml::xml_node<>* roomNode) : Object(roomNode) {
   
   
   //Get the borders in the room
-	roomProperty = roomNode->first_node("border");
-	while(roomProperty) {
-		rapidxml::xml_node<>* borderNode = roomProperty->first_node("direction");
-		int borderIndex = direction_to_array(borderNode->value());
-		borderNode = roomProperty->first_node("name");
-		border[borderIndex] = std::string(borderNode->value());
-		roomProperty = roomProperty->next_sibling("border");
-	}
+  roomProperty = roomNode->first_node("border");
+  while(roomProperty) {
+    rapidxml::xml_node<>* borderNode = roomProperty->first_node("direction");
+    int borderIndex = direction_to_array(borderNode->value());
+    borderNode = roomProperty->first_node("name");
+    border[borderIndex] = std::string(borderNode->value());
+    roomProperty = roomProperty->next_sibling("border");
+  }
   
   //Add the list of containers that are in the room
   roomProperty = roomNode->first_node("container");
